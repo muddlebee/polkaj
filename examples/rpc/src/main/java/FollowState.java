@@ -4,6 +4,7 @@ import io.emeraldpay.polkaj.api.SubscriptionAdapter;
 import io.emeraldpay.polkaj.apiws.JavaHttpSubscriptionAdapter;
 import io.emeraldpay.polkaj.json.BlockJson;
 
+import java.net.URISyntaxException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -14,8 +15,13 @@ import java.util.concurrent.TimeoutException;
 
 public class FollowState {
 
-    public static void main(String[] args) throws InterruptedException, ExecutionException, TimeoutException {
-        JavaHttpSubscriptionAdapter wsAdapter = JavaHttpSubscriptionAdapter.newBuilder().build();
+    public static void main(String[] args) throws InterruptedException, ExecutionException, TimeoutException, URISyntaxException {
+
+        JavaHttpSubscriptionAdapter wsAdapter = JavaHttpSubscriptionAdapter
+                .newBuilder()
+                .connectTo("wss://westend.api.onfinality.io/public-ws")
+                .build();
+
         PolkadotApi api = PolkadotApi.newBuilder()
                 .subscriptionAdapter(wsAdapter)
                 .build();

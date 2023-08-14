@@ -2,20 +2,32 @@ import io.emeraldpay.polkaj.api.PolkadotApi;
 import io.emeraldpay.polkaj.api.PolkadotMethod;
 import io.emeraldpay.polkaj.api.RpcCall;
 import io.emeraldpay.polkaj.apihttp.JavaHttpAdapter;
+import io.emeraldpay.polkaj.apiws.JavaHttpSubscriptionAdapter;
 import io.emeraldpay.polkaj.json.BlockResponseJson;
 import io.emeraldpay.polkaj.json.RuntimeVersionJson;
 import io.emeraldpay.polkaj.json.SystemHealthJson;
 import io.emeraldpay.polkaj.types.Hash256;
 
+import java.net.URISyntaxException;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class ShowState {
     public static void main(String[] args) throws Exception {
 
-        PolkadotApi api = PolkadotApi.newBuilder()
-                .rpcCallAdapter(JavaHttpAdapter.newBuilder().build())
+        JavaHttpSubscriptionAdapter wsAdapter = JavaHttpSubscriptionAdapter
+                .newBuilder()
+                .connectTo("wss://westend.api.onfinality.io/public-ws")
                 .build();
+
+        PolkadotApi api = PolkadotApi.newBuilder()
+                .subscriptionAdapter(wsAdapter)
+                .build();
+
+        // IMPORTANT! connect to the node as the first step before making calls or subscriptions.
+        wsAdapter.connect().get(5, TimeUnit.SECONDS);
 
         Future<Hash256> hashFuture = api.execute(
                 // use RpcCall.create to define the request
@@ -57,18 +69,5 @@ public class ShowState {
         System.out.println("State hash: " + block.getBlock().getHeader().getStateRoot());
         api.close();
     }
-
-//    PolkadotApi client() throws URISyntaxException {
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        objectMapper.registerModule(new PolkadotModule());
-//
-//        PolkadotHttpApi client = PolkadotHttpApi.newBuilder()
-//                .objectMapper(objectMapper) // <1>
-//                .connectTo("http://10.0.1.20:9333") // <2>
-//                .basicAuth("alice", "secret") // <3>
-//                .build();
-//
-//        return client;
-//    }
 
 }
