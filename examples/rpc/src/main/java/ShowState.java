@@ -1,18 +1,14 @@
 import io.emeraldpay.polkaj.api.PolkadotApi;
 import io.emeraldpay.polkaj.api.PolkadotMethod;
 import io.emeraldpay.polkaj.api.RpcCall;
-import io.emeraldpay.polkaj.apihttp.JavaHttpAdapter;
 import io.emeraldpay.polkaj.apiws.JavaHttpSubscriptionAdapter;
 import io.emeraldpay.polkaj.json.BlockResponseJson;
 import io.emeraldpay.polkaj.json.RuntimeVersionJson;
 import io.emeraldpay.polkaj.json.SystemHealthJson;
 import io.emeraldpay.polkaj.types.Hash256;
 
-import java.net.URISyntaxException;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 public class ShowState {
     public static void main(String[] args) throws Exception {
