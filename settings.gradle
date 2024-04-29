@@ -11,4 +11,5 @@ include "polkaj-ss58",
         "polkaj-api-ws",
         "polkaj-tx",
         "polkaj-adapter-tests"
+include 'polkaj-keyring'
 

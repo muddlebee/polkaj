@@ -164,6 +164,8 @@ public class Metadata {
         }
     }
 
+    //TODO:change storage type
+
     public static class Storage {
         private String prefix;
         private List<Entry> entries;
@@ -278,6 +280,8 @@ public class Metadata {
             TWOX_64_CONCAT,
             IDENTITY
         }
+
+        //TODO: check for other such instances of generic types
 
         public static enum TypeId {
             PLAIN(String.class),

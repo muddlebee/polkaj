@@ -75,6 +75,13 @@ public class Keys {
         System.out.println("Valid: " + valid + " for address " + alice);
     }
 
+    //generate a new key pair from seed phrase
+    public static void generateKeyPairFromSeed() throws SchnorrkelException {
+
+
+
+    }
+
     public static void main(String[] args) {
         try {
             createNewKey();

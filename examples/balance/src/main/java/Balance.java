@@ -12,6 +12,12 @@ public class Balance {
 
     public static void main(String[] args) throws Exception {
         try (
+
+                /**
+                 *
+                 *  TODO: Can we abstract the below three steps
+                 */
+
                 JavaHttpSubscriptionAdapter wsAdapter = JavaHttpSubscriptionAdapter
                         .newBuilder()
                         .connectTo("wss://westend.api.onfinality.io/public-ws")
@@ -20,12 +26,20 @@ public class Balance {
                 PolkadotApi client = PolkadotApi.newBuilder()
                         .subscriptionAdapter(wsAdapter)
                         .build();
-             //   PolkadotApi client = PolkadotApi.newBuilder().rpcCallAdapter(JavaHttpAdapter.newBuilder().build()).build()
+                //   PolkadotApi client = PolkadotApi.newBuilder().rpcCallAdapter(JavaHttpAdapter.newBuilder().build()).build()
         ) {
             wsAdapter.connect().get(5, TimeUnit.SECONDS);
 
+            /**
+             *  TODO: abstract
+             */
+
             DotAmountFormatter formatter = DotAmountFormatter.autoFormatter();
 
+
+            /**
+             *  TODO: chain the below to metadata
+             */
             DotAmount total = AccountRequests.totalIssuance().execute(client).get();
             System.out.println(
                     "Total Issued: " +

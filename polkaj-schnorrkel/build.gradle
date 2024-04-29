@@ -1,6 +1,12 @@
 apply from: '../common_java_app.gradle'
 
+repositories {
+    mavenCentral() // or jcenter(), or maven { url 'https://custom-repo.com' }
+}
+
 dependencies {
+    implementation 'org.web3j:crypto:4.9.1'
+
 }
 
 test {

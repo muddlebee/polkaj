@@ -1,0 +1,25 @@
+plugins {
+    id 'java'
+}
+
+group = 'io.emeraldpay.polkaj'
+version = '0.5.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.bouncycastle:bcprov-jdk15on:1.70'
+    implementation 'org.keycloak:keycloak-core:19.0.3' // Replace with the desired Keycloak version
+
+    //web3j
+    implementation 'org.web3j:core:5.0.0'
+
+//    testImplementation platform('org.junit:junit-bom:5.10.0')
+//    testImplementation 'org.junit.jupiter:junit-jupiter'
+}
+
+test {
+    useJUnitPlatform()
+}

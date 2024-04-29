@@ -1,8 +1,8 @@
 apply from: '../common_java_app.gradle'
 
 compileJava {
-    targetCompatibility = '11'
-    sourceCompatibility = '11'
+    targetCompatibility = '18'
+    sourceCompatibility = '18'
 }
 
 dependencies {

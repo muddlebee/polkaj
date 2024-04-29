@@ -32,14 +32,14 @@ jacoco {
     toolVersion = "0.8.5"
 }
 
-task coverageReport(type: JacocoReport) {
-    executionData.setFrom project.fileTree(dir: '.', include: '**/build/jacoco/test.exec')
-    reports {
-        html.enabled true
-        xml.enabled true
-        csv.enabled false
-    }
-}
+//task coverageReport(type: JacocoReport) {
+//    executionData.setFrom project.fileTree(dir: '.', include: '**/build/jacoco/test.exec')
+//    reports {
+//        html.enabled = true
+//        xml.enabled = true
+//        csv.enabled = false
+//    }
+//}
 
 task syncJars(type: Sync) {
     allprojects { p ->

@@ -1,16 +1,15 @@
 apply plugin: 'java'
 apply plugin: 'java-library'
-apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: 'groovy'
 apply plugin: 'jacoco'
 apply plugin: 'com.jfrog.bintray'
 
-afterEvaluate {
-    rootProject.tasks.coverageReport.additionalSourceDirs.setFrom rootProject.tasks.coverageReport.additionalSourceDirs.files + files(it.sourceSets.main.allSource.srcDirs)
-    rootProject.tasks.coverageReport.sourceDirectories.setFrom rootProject.tasks.coverageReport.sourceDirectories.files + files(it.sourceSets.main.allSource.srcDirs)
-    rootProject.tasks.coverageReport.classDirectories.setFrom rootProject.tasks.coverageReport.classDirectories.files + files(it.sourceSets.main.output)
-}
+//afterEvaluate {
+//    rootProject.tasks.coverageReport.additionalSourceDirs.setFrom rootProject.tasks.coverageReport.additionalSourceDirs.files + files(it.sourceSets.main.allSource.srcDirs)
+//    rootProject.tasks.coverageReport.sourceDirectories.setFrom rootProject.tasks.coverageReport.sourceDirectories.files + files(it.sourceSets.main.allSource.srcDirs)
+//    rootProject.tasks.coverageReport.classDirectories.setFrom rootProject.tasks.coverageReport.classDirectories.files + files(it.sourceSets.main.output)
+//}
 
 
 tasks.withType(JavaCompile) {
@@ -18,8 +17,8 @@ tasks.withType(JavaCompile) {
 }
 
 compileJava {
-    targetCompatibility = '8'
-    sourceCompatibility = '8'
+    sourceCompatibility = 18
+    targetCompatibility = 18
 }
 
 
@@ -37,6 +36,11 @@ dependencies {
     testImplementation 'org.codehaus.groovy:groovy-all:3.0.3'
     testImplementation 'commons-codec:commons-codec:1.14'
     testImplementation 'cglib:cglib-nodep:3.3.0'
+
+    // Lombok dependency
+    compileOnly 'org.projectlombok:lombok:1.18.20'
+    annotationProcessor 'org.projectlombok:lombok:1.18.20'
+
 }
 
 test {
@@ -47,36 +51,36 @@ test {
     testLogging.exceptionFormat = 'full'
 }
 
-// Must be after sourceSets closure
-jacocoTestReport {
-    dependsOn tasks.test
+//// Must be after sourceSets closure
+//jacocoTestReport {
+//    dependsOn tasks.test
+//
+//    //noinspection GroovyAssignabilityCheck
+//    sourceSets sourceSets.main
+//    reports {
+//        html.enabled = true
+//        xml.enabled = true
+//        csv.enabled = false
+//    }
+//}
+//tasks.check.dependsOn tasks.jacocoTestReport
+//rootProject.tasks.coverageReport.dependsOn tasks.test
+//test.finalizedBy jacocoTestReport
 
-    //noinspection GroovyAssignabilityCheck
-    sourceSets sourceSets.main
-    reports {
-        html.enabled = true
-        xml.enabled = true
-        csv.enabled = false
-    }
-}
-tasks.check.dependsOn tasks.jacocoTestReport
-rootProject.tasks.coverageReport.dependsOn tasks.test
-test.finalizedBy jacocoTestReport
-
-task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
-}
-
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from javadoc.destinationDir
-}
-
-artifacts {
-    archives sourcesJar
-    archives javadocJar
-}
+//task sourcesJar(type: Jar, dependsOn: classes) {
+//    classifier = 'sources'
+//    from sourceSets.main.allSource
+//}
+//
+//task javadocJar(type: Jar, dependsOn: javadoc) {
+//    classifier = 'javadoc'
+//    from javadoc.destinationDir
+//}
+//
+//artifacts {
+//    archives sourcesJar
+//    archives javadocJar
+//}
 
 jacoco {
     toolVersion = "0.8.5"

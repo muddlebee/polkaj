@@ -90,6 +90,7 @@ public class AccountRequests {
             this.address = address;
         }
 
+        //TODO: send encoded request
         @Override
         public ByteData encodeRequest() {
             String key1 = "System";
@@ -103,6 +104,7 @@ public class AccountRequests {
             return new ByteData(buffer.flip().array());
         }
 
+        //TODO: receive and decode request
         @Override
         public AccountInfo apply(ByteData result) {
             if (result == null) {

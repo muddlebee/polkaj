@@ -19,9 +19,9 @@ public class MetadataReader implements ScaleReader<Metadata> {
         Metadata result = new Metadata();
         result.setMagic(ScaleCodecReader.INT32.read(rdr));
         result.setVersion(rdr.readUByte());
-        if (result.getVersion() != 12) {
-            throw new IllegalStateException("Unsupported metadata version: " + result.getVersion());
-        }
+//        if (result.getVersion() != 12) {
+//            throw new IllegalStateException("Unsupported metadata version: " + result.getVersion());
+//        }
         result.setModules(MODULE_LIST_READER.read(rdr));
         List<Metadata.Module> modules = result.getModules();
 

@@ -4,6 +4,7 @@ import io.emeraldpay.polkaj.apihttp.JavaHttpAdapter;
 import io.emeraldpay.polkaj.scale.ScaleExtract;
 import io.emeraldpay.polkaj.scaletypes.Metadata;
 import io.emeraldpay.polkaj.scaletypes.MetadataReader;
+import io.emeraldpay.polkaj.apiws.JavaHttpSubscriptionAdapter;
 
 import java.util.concurrent.Future;
 
@@ -13,8 +14,13 @@ import java.util.concurrent.Future;
 public class DescribeRuntime {
 
     public static void main(String[] args) throws Exception {
+        JavaHttpSubscriptionAdapter wsAdapter = JavaHttpSubscriptionAdapter
+                .newBuilder()
+                .connectTo("wss://westend.api.onfinality.io/public-ws")
+                .build();
+
         PolkadotApi api = PolkadotApi.newBuilder()
-                .rpcCallAdapter(JavaHttpAdapter.newBuilder().build())
+                .subscriptionAdapter(wsAdapter)
                 .build();
         Future<Metadata> metadataFuture = api.execute(StandardCommands.getInstance().stateMetadata())
                 .thenApply(ScaleExtract.fromBytesData(new MetadataReader()));

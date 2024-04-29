@@ -1,5 +1,7 @@
 package io.emeraldpay.polkaj.schnorrkel;
 
+import org.web3j.crypto.MnemonicUtils;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -151,6 +153,24 @@ public class SchnorrkelNative extends Schnorrkel {
         target.toFile().deleteOnExit();
         dir.toFile().deleteOnExit();
         return true;
+    }
+
+
+    //generate seed
+    public static byte[] generateSeed()  {
+        final SecureRandom secureRandom = new SecureRandom();
+        byte[] initialEntropy = new byte[16];
+        secureRandom.nextBytes(initialEntropy);
+        String mnemonic = MnemonicUtils.generateMnemonic(initialEntropy);
+        //print mnemonic
+        System.out.println("mnemonic: " + mnemonic);
+        byte[] seed = MnemonicUtils.generateSeed(mnemonic, "");
+        return seed;
+    }
+
+    //psvm
+    public static void main(String[] args) {
+       generateSeed();
     }
 
 }
