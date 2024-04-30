@@ -10,11 +10,11 @@ dependencies {
     api 'org.mock-server:mockserver-netty:5.10'
     api 'org.java-websocket:Java-WebSocket:1.5.1'
     api 'org.objenesis:objenesis:3.1'
-    api ('org.spockframework:spock-core:2.0-M2-groovy-3.0') {
-        exclude group: 'org.codehaus.groovy'
+    api ('org.spockframework:spock-core:2.4-M4-groovy-4.0') {
+        exclude group: 'org.apache.groovy'
     }
     api "nl.jqno.equalsverifier:equalsverifier:3.3"
-    api 'org.codehaus.groovy:groovy-all:3.0.3'
+    api 'org.apache.groovy:groovy-all:4.0.10'
     api 'commons-codec:commons-codec:1.14'
     api 'cglib:cglib-nodep:3.3.0'
 }

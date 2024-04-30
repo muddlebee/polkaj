@@ -1,5 +1,6 @@
 import io.emeraldpay.polkaj.schnorrkel.Schnorrkel;
 import io.emeraldpay.polkaj.schnorrkel.SchnorrkelException;
+import io.emeraldpay.polkaj.schnorrkel.SchnorrkelNative;
 import io.emeraldpay.polkaj.ss58.SS58Type;
 import io.emeraldpay.polkaj.types.Address;
 import org.apache.commons.codec.DecoderException;
@@ -79,21 +80,25 @@ public class Keys {
     public static void generateKeyPairFromSeed() throws SchnorrkelException {
 
 
+        // generate seed
+        byte[] seed = SchnorrkelNative.generateSeed();
+
 
     }
 
     public static void main(String[] args) {
         try {
-            createNewKey();
-            System.out.println("\n---\n");
-            derive();
-            System.out.println("\n---\n");
-            sign();
-            System.out.println("\n---\n");
-            verifyWithPubkey();
-            System.out.println("\n---\n");
-            verifyWithAddress();
-        } catch (SchnorrkelException | DecoderException e) {
+//            createNewKey();
+//            System.out.println("\n---\n");
+//            derive();
+//            System.out.println("\n---\n");
+//            sign();
+//            System.out.println("\n---\n");
+//            verifyWithPubkey();
+//            System.out.println("\n---\n");
+//            verifyWithAddress();
+            generateKeyPairFromSeed();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
