@@ -82,6 +82,7 @@ public class AccountRequests {
         }
     }
 
+    //TODO: separate StorageRequest logic
     public static class AddressBalance extends StorageRequest<AccountInfo> {
 
         private final Address address;
@@ -114,6 +115,7 @@ public class AccountRequests {
         }
     }
 
+    //TODO: separate ExtrinsicRequest logic
     public static class Transfer implements ExtrinsicRequest {
         private static final ExtrinsicWriter<BalanceTransfer> CODEC = new ExtrinsicWriter<>(
                 new BalanceTransferWriter()
@@ -146,6 +148,7 @@ public class AccountRequests {
     }
 
 
+    //TODO: TransferBuilder and generic builder logic
     public static class TransferBuilder {
         private Address from;
         private Extrinsic.Signature signature;

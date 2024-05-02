@@ -1,24 +1,16 @@
 import io.emeraldpay.polkaj.api.PolkadotApi;
-import io.emeraldpay.polkaj.api.StandardCommands;
 import io.emeraldpay.polkaj.api.StandardSubscriptions;
 import io.emeraldpay.polkaj.apiws.JavaHttpSubscriptionAdapter;
-import io.emeraldpay.polkaj.scale.ScaleExtract;
-import io.emeraldpay.polkaj.scaletypes.AccountInfo;
-import io.emeraldpay.polkaj.scaletypes.Metadata;
-import io.emeraldpay.polkaj.scaletypes.MetadataReader;
 import io.emeraldpay.polkaj.schnorrkel.Schnorrkel;
 import io.emeraldpay.polkaj.ss58.SS58Type;
-import io.emeraldpay.polkaj.tx.AccountRequests;
-import io.emeraldpay.polkaj.tx.ExtrinsicContext;
 import io.emeraldpay.polkaj.types.*;
 import org.apache.commons.codec.binary.Hex;
 
-import java.util.Arrays;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class fetch_metadata {
+public class Fetch_metadata {
 
     private static final DotAmountFormatter AMOUNT_FORMAT = DotAmountFormatter.autoFormatter();
 

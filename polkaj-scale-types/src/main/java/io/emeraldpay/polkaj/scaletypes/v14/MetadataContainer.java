@@ -1,10 +1,7 @@
 package io.emeraldpay.polkaj.scaletypes.v14;
 
-import io.emeraldpay.polkaj.scaletypes.Metadata;
 import lombok.Data;
-
 import java.util.List;
-import java.util.Objects;
 
 @Data
 public class MetadataContainer {
@@ -25,13 +22,7 @@ public class MetadataContainer {
 
     @Data
     public static class Lookup {
-        private List<Types> types;
-    }
-
-    @Data
-    public static class Types {
-        private int id;
-        private CustomType type;
+        private List<Type> types;
     }
 
     @Data
@@ -122,13 +113,11 @@ public class MetadataContainer {
     }
 
 
-//    @Data
-//    public class StorageType {
-//        private CustomType<?> type;
-//    }
-
     public static enum TypeId {
-        PLAIN(String.class), MAP(io.emeraldpay.polkaj.scaletypes.Metadata.Storage.MapDefinition.class), DOUBLEMAP(io.emeraldpay.polkaj.scaletypes.Metadata.Storage.DoubleMapDefinition.class);
+        PLAIN(String.class),
+        MAP(MapDefinition.class);
+
+     //   DOUBLEMAP(DoubleMapDefinition.class);
 
         private final Class<?> clazz;
 
@@ -157,7 +146,6 @@ public class MetadataContainer {
         private Hasher hasher;
         private String key;
         private String type;
-        private boolean iterable;
     }
 
     public static class MapType extends CustomType<MapDefinition> {
@@ -172,25 +160,25 @@ public class MetadataContainer {
     }
 
 
-    @Data
-    public static class DoubleMapDefinition {
-        private Hasher firstHasher;
-        private String firstKey;
-        private Hasher secondHasher;
-        private String secondKey;
-        private String type;
-    }
-
-    public static class DoubleMapType extends CustomType<DoubleMapDefinition> {
-        public DoubleMapType(DoubleMapDefinition value) {
-            super(value);
-        }
-
-        @Override
-        public TypeId getId() {
-            return TypeId.DOUBLEMAP;
-        }
-    }
+//    @Data
+//    public static class DoubleMapDefinition {
+//        private Hasher firstHasher;
+//        private String firstKey;
+//        private Hasher secondHasher;
+//        private String secondKey;
+//        private String type;
+//    }
+//
+//    public static class DoubleMapType extends CustomType<DoubleMapDefinition> {
+//        public DoubleMapType(DoubleMapDefinition value) {
+//            super(value);
+//        }
+//
+//        @Override
+//        public TypeId getId() {
+//            return TypeId.DOUBLEMAP;
+//        }
+//    }
 
     public abstract static class CustomType<T> {
         private final T value;
