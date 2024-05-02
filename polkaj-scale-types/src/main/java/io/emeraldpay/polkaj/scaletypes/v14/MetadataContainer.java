@@ -5,7 +5,7 @@ import java.util.List;
 
 @Data
 public class MetadataContainer {
-    private int magicNumber;
+    private Integer magicNumber;
     private Metadata metadata;
 
     @Data
@@ -52,7 +52,7 @@ public class MetadataContainer {
     public static class CallVariant {
         private String name;
         private List<Field> fields;
-        private int index;
+        private Integer index;
         private List<String> docs;
     }
 
@@ -66,16 +66,16 @@ public class MetadataContainer {
 
     @Data
     public static class Extrinsic {
-        private int type;
-        private int version;
+        private Integer type;
+        private Integer version;
         private List<SignedExtension> signedExtensions;
     }
 
     @Data
     public static class SignedExtension {
         private String identifier;
-        private int type;
-        private int additionalSigned;
+        private Integer type;
+        private Integer additionalSigned;
     }
 
     @Data
@@ -86,7 +86,7 @@ public class MetadataContainer {
         private Events events;
         private List<Constant> constants;
         private Errors errors;
-        private int index;
+        private Integer index;
     }
 
     @Data
@@ -204,24 +204,24 @@ public class MetadataContainer {
 
     @Data
     public static class Calls {
-        private int type;
+        private Integer type;
     }
 
     @Data
     public static class Events {
-        private int type;
+        private Integer type;
     }
 
     @Data
     public static class Constant {
         private String name;
-        private int type;
+        private Integer type;
         private byte[] value;
         private List<String> docs;
     }
 
     @Data
     public static class Errors {
-        private int type;
+        private Integer type;
     }
 }

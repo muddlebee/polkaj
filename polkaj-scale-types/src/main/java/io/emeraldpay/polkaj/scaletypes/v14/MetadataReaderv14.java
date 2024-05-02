@@ -9,17 +9,19 @@ import io.emeraldpay.polkaj.scale.reader.UnionReader;
 
 public class MetadataReaderv14 implements ScaleReader<MetadataContainer> {
 
-
     public static final EnumReader<MetadataContainer.Hasher> HASHER_ENUM_READER = new EnumReader<>(MetadataContainer.Hasher.values());
 
     public static final ListReader<String> STRING_LIST_READER = new ListReader<>(ScaleCodecReader.STRING);
+
+    //INT32 scale reader
+    public static final ScaleReader<Integer> INT32_READER = ScaleCodecReader.INT32;
 
 
     @Override
     public MetadataContainer read(ScaleCodecReader rdr) {
 
         MetadataContainer result = new MetadataContainer();
-        result.setMagicNumber(ScaleCodecReader.INT32.read(rdr));
+        result.setMagicNumber(INT32_READER.read(rdr));
 
         MetadataContainer.Metadata metadata = new MetadataContainer.Metadata();
         metadata.setV14(new MetadataScaleReader().read(rdr));
@@ -79,7 +81,7 @@ public class MetadataReaderv14 implements ScaleReader<MetadataContainer> {
             public MetadataContainer.Param read(ScaleCodecReader rdr) {
                 MetadataContainer.Param result = new MetadataContainer.Param();
                 result.setName(rdr.readString());
-                result.setType(rdr.readUByte());
+                result.setType(INT32_READER.read(rdr));
                 return result;
             }
         }
@@ -132,7 +134,7 @@ public class MetadataReaderv14 implements ScaleReader<MetadataContainer> {
         @Override
         public MetadataContainer.Calls read(ScaleCodecReader rdr) {
             MetadataContainer.Calls calls = new MetadataContainer.Calls();
-            calls.setType(rdr.readUByte());
+            calls.setType(ScaleCodecReader.INT32.read(rdr));
             return calls;
         }
     }
@@ -141,7 +143,7 @@ public class MetadataReaderv14 implements ScaleReader<MetadataContainer> {
         public MetadataContainer.CallVariant read(ScaleCodecReader rdr) {
             MetadataContainer.CallVariant result = new MetadataContainer.CallVariant();
             result.setName(rdr.readString());
-            result.setIndex(rdr.readUByte());
+            result.setIndex(INT32_READER.read(rdr));
             result.setFields(new ListReader<>(new FieldReader()).read(rdr));
             result.setDocs(STRING_LIST_READER.read(rdr));
             return result;
@@ -152,7 +154,7 @@ public class MetadataReaderv14 implements ScaleReader<MetadataContainer> {
             public MetadataContainer.Field read(ScaleCodecReader rdr) {
                 MetadataContainer.Field result = new MetadataContainer.Field();
                 result.setName(rdr.readString());
-                result.setType(rdr.readUByte());
+                result.setType(INT32_READER.read(rdr));
                 result.setTypeName(rdr.readString());
                 result.setDocs(STRING_LIST_READER.read(rdr));
                 return result;
@@ -167,8 +169,8 @@ public class MetadataReaderv14 implements ScaleReader<MetadataContainer> {
         @Override
         public MetadataContainer.Extrinsic read(ScaleCodecReader rdr) {
             MetadataContainer.Extrinsic result = new MetadataContainer.Extrinsic();
-            result.setType(rdr.readUByte());
-            result.setVersion(rdr.readUByte());
+            result.setType(INT32_READER.read(rdr));
+            result.setVersion(INT32_READER.read(rdr));
             result.setSignedExtensions(SIGNED_EXTENSION_LIST_READER.read(rdr));
             return result;
         }
@@ -181,8 +183,8 @@ public class MetadataReaderv14 implements ScaleReader<MetadataContainer> {
         public MetadataContainer.SignedExtension read(ScaleCodecReader rdr) {
             MetadataContainer.SignedExtension result = new MetadataContainer.SignedExtension();
             result.setIdentifier(rdr.readString());
-            result.setType(rdr.readUByte());
-            result.setAdditionalSigned(rdr.readUByte());
+            result.setType(INT32_READER.read(rdr));
+            result.setAdditionalSigned(INT32_READER.read(rdr));
             return result;
         }
     }
