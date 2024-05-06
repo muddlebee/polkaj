@@ -55,25 +55,14 @@ public class MetadataReaderv14 implements ScaleReader<MetadataContainer> {
         }
 
         public static class DefReader implements ScaleReader<MetadataContainer.Def> {
-            public static final VariantReader VARIANT_READER = new VariantReader();
 
             @Override
             public MetadataContainer.Def read(ScaleCodecReader rdr) {
                 MetadataContainer.Def result = new MetadataContainer.Def();
-                result.setVariant(VARIANT_READER.read(rdr));
+                result.setType(rdr.read(new DefTypeReader()));
                 return result;
             }
 
-            public static class VariantReader implements ScaleReader<MetadataContainer.Variant> {
-                public static final ListReader<MetadataContainer.CallVariant> CALL_VARIANT_LIST_READER = new ListReader<>(new CallVariantReader());
-
-                @Override
-                public MetadataContainer.Variant read(ScaleCodecReader rdr) {
-                    MetadataContainer.Variant result = new MetadataContainer.Variant();
-                    result.setVariants(CALL_VARIANT_LIST_READER.read(rdr));
-                    return result;
-                }
-            }
         }
 
         public static class ParamReader implements ScaleReader<MetadataContainer.Param> {
@@ -233,6 +222,60 @@ public class MetadataReaderv14 implements ScaleReader<MetadataContainer> {
 //            return new MetadataContainer.DoubleMapType(definition);
 //        }
 //    }
+
+    static class DefTypeReader implements ScaleReader<MetadataContainer.CustomType<?>> {
+
+        @SuppressWarnings("unchecked")
+        public static final UnionReader<MetadataContainer.CustomType<?>> DEF_UNION_READER = new UnionReader<>(new PrimitiveTypeReader(), new CompositeTypeReader(), new VariantTypeReader());
+
+        @Override
+        public MetadataContainer.CustomType<?> read(ScaleCodecReader rdr) {
+            return DEF_UNION_READER.read(rdr).getValue();
+        }
+
+        static class PrimitiveTypeReader implements ScaleReader<MetadataContainer.PrimitiveType> {
+            @Override
+            public MetadataContainer.PrimitiveType read(ScaleCodecReader rdr) {
+                return new MetadataContainer.PrimitiveType(rdr.readString());
+            }
+        }
+
+        static class CompositeTypeReader implements ScaleReader<MetadataContainer.CompositeType> {
+
+            @Override
+            public MetadataContainer.CompositeType read(ScaleCodecReader rdr) {
+                return new MetadataContainer.CompositeType(new CompositeReader().read(rdr));
+            }
+
+            class CompositeReader implements ScaleReader<MetadataContainer.Composite> {
+
+                @Override
+                public MetadataContainer.Composite read(ScaleCodecReader rdr) {
+                    MetadataContainer.Composite result = new MetadataContainer.Composite();
+                    result.setFields(new ListReader<>(new CallVariantReader.FieldReader()).read(rdr));
+                    return result;
+                }
+            }
+        }
+
+        static class VariantTypeReader implements ScaleReader<MetadataContainer.VariantType> {
+
+            @Override
+            public MetadataContainer.VariantType read(ScaleCodecReader rdr) {
+                return new MetadataContainer.VariantType(new VariantReader().read(rdr));
+            }
+
+            class VariantReader implements ScaleReader<MetadataContainer.Variant> {
+
+                @Override
+                public MetadataContainer.Variant read(ScaleCodecReader rdr) {
+                    MetadataContainer.Variant result = new MetadataContainer.Variant();
+                    result.setVariants(new ListReader<>(new CallVariantReader()).read(rdr));
+                    return result;
+                }
+            }
+        }
+    }
 
     class MetadataScaleReader implements ScaleReader<MetadataContainer.MetadataV14> {
 

@@ -1,6 +1,7 @@
 package io.emeraldpay.polkaj.scaletypes.v14;
 
 import lombok.Data;
+
 import java.util.List;
 
 @Data
@@ -40,21 +41,9 @@ public class MetadataContainer {
 
     @Data
     public static class Def {
-        private Variant variant;
+        private CustomType<?> type;
     }
 
-    @Data
-    public static class Variant {
-        private List<CallVariant> variants;
-    }
-
-    @Data
-    public static class CallVariant {
-        private String name;
-        private List<Field> fields;
-        private Integer index;
-        private List<String> docs;
-    }
 
     @Data
     public static class Field {
@@ -104,6 +93,30 @@ public class MetadataContainer {
         private List<String> docs;
     }
 
+
+    public abstract static class CustomType<T> {
+        private final T value;
+
+        public CustomType(T value) {
+            this.value = value;
+        }
+
+        public abstract TypeId getId();
+
+        public T get() {
+            return value;
+        }
+
+        @SuppressWarnings("unchecked")
+        public <X> CustomType<X> cast(Class<X> clazz) {
+            if (clazz.isAssignableFrom(getId().getClazz())) {
+                return (CustomType<X>) this;
+            }
+            throw new ClassCastException("Cannot cast " + getId().getClazz() + " to " + clazz);
+        }
+    }
+
+
     public static enum Modifier {
         OPTIONAL, DEFAULT, REQUIRED
     }
@@ -115,9 +128,14 @@ public class MetadataContainer {
 
     public static enum TypeId {
         PLAIN(String.class),
-        MAP(MapDefinition.class);
+        MAP(MapDefinition.class),
 
-     //   DOUBLEMAP(DoubleMapDefinition.class);
+        //   DOUBLEMAP(DoubleMapDefinition.class);
+
+        PRIMITIVE(String.class),
+        COMPOSITE(Composite.class),
+        VARIANT(Variant.class);
+
 
         private final Class<?> clazz;
 
@@ -159,6 +177,59 @@ public class MetadataContainer {
         }
     }
 
+    // Primitive type
+    public static class PrimitiveType extends CustomType<String> {
+        public PrimitiveType(String value) {
+            super(value);
+        }
+
+        @Override
+        public TypeId getId() {
+            return TypeId.PRIMITIVE;
+        }
+    }
+
+    //Variant type
+    @Data
+    public static class Variant {
+        private List<CallVariant> variants;
+    }
+
+    @Data
+    public static class CallVariant {
+        private String name;
+        private List<Field> fields;
+        private Integer index;
+        private List<String> docs;
+    }
+    public static class VariantType extends CustomType<Variant> {
+        public VariantType(Variant value) {
+            super(value);
+        }
+
+        @Override
+        public TypeId getId() {
+            return TypeId.VARIANT;
+        }
+    }
+
+    //Composite type
+    @Data
+    public static class Composite {
+        private List<Field> fields;
+    }
+
+    public static class CompositeType extends CustomType<Composite> {
+        public CompositeType(Composite value) {
+            super(value);
+        }
+
+        @Override
+        public TypeId getId() {
+            return TypeId.COMPOSITE;
+        }
+    }
+
 
 //    @Data
 //    public static class DoubleMapDefinition {
@@ -179,28 +250,6 @@ public class MetadataContainer {
 //            return TypeId.DOUBLEMAP;
 //        }
 //    }
-
-    public abstract static class CustomType<T> {
-        private final T value;
-
-        public CustomType(T value) {
-            this.value = value;
-        }
-
-        public abstract TypeId getId();
-
-        public T get() {
-            return value;
-        }
-
-        @SuppressWarnings("unchecked")
-        public <X> CustomType<X> cast(Class<X> clazz) {
-            if (clazz.isAssignableFrom(getId().getClazz())) {
-                return (CustomType<X>) this;
-            }
-            throw new ClassCastException("Cannot cast " + getId().getClazz() + " to " + clazz);
-        }
-    }
 
     @Data
     public static class Calls {
