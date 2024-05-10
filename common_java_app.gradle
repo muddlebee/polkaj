@@ -33,7 +33,7 @@ dependencies {
         exclude group: 'org.apache.groovy'
     }
     testImplementation "nl.jqno.equalsverifier:equalsverifier:3.3"
-    testImplementation 'org.apache.groovy:groovy-all:4.0.10'
+    testImplementation 'org.apache.groovy:groovy-all:4.0.18'
     testImplementation 'commons-codec:commons-codec:1.14'
     testImplementation 'cglib:cglib-nodep:3.3.0'
 
@@ -83,7 +83,7 @@ artifacts {
 }
 
 jacoco {
-    toolVersion = "0.8.5"
+    toolVersion = "0.8.12"
 }
 
 publishing {
@@ -151,7 +151,6 @@ bintray {
     }
 }
 
-//skip test for now
 test {
     enabled = false
 }

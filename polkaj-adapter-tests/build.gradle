@@ -14,7 +14,9 @@ dependencies {
         exclude group: 'org.apache.groovy'
     }
     api "nl.jqno.equalsverifier:equalsverifier:3.3"
-    api 'org.apache.groovy:groovy-all:4.0.10'
+ //   api 'org.apache.groovy:groovy-all:4.0.10'
+    api  'org.apache.groovy:groovy-all:4.0.18'
+
     api 'commons-codec:commons-codec:1.14'
     api 'cglib:cglib-nodep:3.3.0'
 }
