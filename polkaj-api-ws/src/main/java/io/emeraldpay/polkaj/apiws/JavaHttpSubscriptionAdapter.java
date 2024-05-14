@@ -102,6 +102,12 @@ public class JavaHttpSubscriptionAdapter implements SubscriptionAdapter, RpcCall
         })).thenCombine(whenConnected, (webSocket, isOpen) -> isOpen);
     }
 
+    /**
+     * Listener for the WebSocket connection
+     *
+     * @param whenConnected
+     * @return
+     */
     private WebSocket.Listener newListener(final CompletableFuture<Boolean> whenConnected) {
         return new WebSocket.Listener() {
             @Override
@@ -142,6 +148,13 @@ public class JavaHttpSubscriptionAdapter implements SubscriptionAdapter, RpcCall
         };
     }
 
+    /**
+     *  Make RPC calls to the server
+     *
+     * @param call
+     * @return
+     * @param <T>
+     */
     @Override
     public <T> CompletableFuture<T> produceRpcFuture(final RpcCall<T> call) {
         int id = rpcCoder.nextId();
@@ -161,6 +174,7 @@ public class JavaHttpSubscriptionAdapter implements SubscriptionAdapter, RpcCall
     }
 
 
+    //TODO: main engine below for RpcCall
     @Override
     public <T> CompletableFuture<Subscription<T>> subscribe(final SubscribeCall<T> call) {
         var subscription = new DefaultSubscription<T>(call.getResultType(rpcCoder.getObjectMapper().getTypeFactory()), call.getUnsubscribe(),this);

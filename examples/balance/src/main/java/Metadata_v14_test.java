@@ -15,6 +15,7 @@ public class Metadata_v14_test {
     public static void main(String[] args) throws Exception {
 
             String api = "wss://westend.api.onfinality.io/public-ws";
+          //  String api = "wss://rpc-polkadot.luckyfriday.io";
             if (args.length >= 1) {
                 api = args[0];
             }

@@ -3,6 +3,8 @@ package io.emeraldpay.polkaj.scale;
 import io.emeraldpay.polkaj.scale.reader.*;
 
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Optional;
 
 /**
@@ -26,10 +28,17 @@ public class ScaleCodecReader {
 
     public ScaleCodecReader(byte[] source) {
         this.source = source;
+        //print the byte array
+        System.out.println("source: " + source);
+        System.out.println();
+        System.out.println("Received data: " + Arrays.toString(source));
+        //print space below
+        System.out.println();
+        String decodedString = new String(source, StandardCharsets.UTF_8);
+        System.out.println("decodedString :" + decodedString);
     }
 
     /**
-     *
      * @return true if has more elements
      */
     public boolean hasNext() {
@@ -38,6 +47,7 @@ public class ScaleCodecReader {
 
     /**
      * Move reader position forward (or backward for negative value)
+     *
      * @param len amount to bytes to skip
      */
     public void skip(int len) {
@@ -49,6 +59,7 @@ public class ScaleCodecReader {
 
     /**
      * Specify a new position
+     *
      * @param pos position
      */
     public void seek(int pos) {
@@ -68,19 +79,24 @@ public class ScaleCodecReader {
         if (!hasNext()) {
             throw new IndexOutOfBoundsException("Cannot read " + pos + " of " + source.length);
         }
+        System.out.println("pos: " + pos);
+        //print source[pos]
+        System.out.println("source[pos]: " + source[pos]);
         return source[pos++];
     }
 
     /**
      * Read complex value from the reader
+     *
      * @param scaleReader reader implementation
-     * @param <T> resulting type
+     * @param <T>         resulting type
      * @return read value
      */
     public <T> T read(ScaleReader<T> scaleReader) {
         if (scaleReader == null) {
             throw new NullPointerException("ItemReader cannot be null");
         }
+        System.out.println("Decoding field of type: " + scaleReader.getClass().getSimpleName());
         return scaleReader.read(this);
     }
 
@@ -104,14 +120,20 @@ public class ScaleCodecReader {
         return COMPACT_UINT.read(this);
     }
 
+    //readCompactBigInt
+    public BigInteger readCompactBigInt() {
+        return COMPACT_BIGINT.read(this);
+    }
+
     public boolean readBoolean() {
         return BOOL.read(this);
     }
 
     /**
      * Read optional value from the reader
+     *
      * @param scaleReader reader implementation
-     * @param <T> resulting type
+     * @param <T>         resulting type
      * @return optional read value
      */
     @SuppressWarnings("unchecked")
@@ -127,6 +149,7 @@ public class ScaleCodecReader {
         }
     }
 
+    //TODO: handle byte arrays and big integers
     public byte[] readUint256() {
         return readByteArray(32);
     }
@@ -136,7 +159,24 @@ public class ScaleCodecReader {
         return readByteArray(len);
     }
 
+    public byte[] readByteArrayBigInt() {
+        BigInteger len = readCompactBigInt();
+
+        //implement readByteArrayBigInt
+        if (len.compareTo(BigInteger.valueOf(Integer.MAX_VALUE)) > 0) {
+            throw new IllegalArgumentException("Length is too big: " + len);
+        }
+        return readByteArray(len.intValue());
+    }
+
     public byte[] readByteArray(int len) {
+        //print all info
+        System.out.println("len: " + len);
+        System.out.println("pos: " + pos);
+        System.out.println("source.length: " + source.length);
+        if (pos + len > source.length) {
+            throw new IllegalArgumentException("Not enough data to read " + len + " bytes");
+        }
         byte[] result = new byte[len];
         System.arraycopy(source, pos, result, 0, result.length);
         pos += len;
@@ -145,9 +185,14 @@ public class ScaleCodecReader {
 
     /**
      * Read string, encoded as UTF-8 bytes
+     *
      * @return string value
      */
     public String readString() {
         return new String(readByteArray());
+    }
+
+    public String readBigString() {
+        return new String(readByteArrayBigInt());
     }
 }

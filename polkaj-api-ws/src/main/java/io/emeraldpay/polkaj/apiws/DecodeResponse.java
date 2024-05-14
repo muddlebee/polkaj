@@ -29,7 +29,6 @@ public class DecodeResponse {
         this.objectMapper = objectMapper;
     }
 
-    //todo: debug this method
     public WsResponse decode(final String json) throws IOException {
         JsonFactory jsonFactory = objectMapper.getFactory();
         JsonParser parser = jsonFactory.createParser(json);

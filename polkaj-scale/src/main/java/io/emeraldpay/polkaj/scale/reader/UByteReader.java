@@ -10,6 +10,8 @@ public class UByteReader implements ScaleReader<Integer> {
         if (x < 0) {
             return 256 + (int)x;
         }
+        //print (int)x
+        System.out.println("x: " + (int)x);
         return (int)x;
     }
 }

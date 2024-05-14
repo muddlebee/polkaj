@@ -18,6 +18,18 @@ public class ByteData {
         return new ByteData(value);
     }
 
+    // Implement ByteData toHex method
+    public String toHex() {
+        char[] hex = new char[value.length * 2];
+        for (int i = 0; i < value.length; i++) {
+            byte b = value[i];
+            hex[i * 2] = Character.forDigit((b & 0xf0) >> 4, 16);
+            hex[i * 2 + 1] = Character.forDigit(b & 0x0f, 16);
+        }
+        return new String(hex);
+    }
+
+
     public static ByteData empty() {
         return new ByteData(new byte[0]);
     }

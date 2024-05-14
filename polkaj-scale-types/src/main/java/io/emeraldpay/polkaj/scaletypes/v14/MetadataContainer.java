@@ -11,7 +11,7 @@ public class MetadataContainer {
 
     @Data
     public static class Metadata {
-        private MetadataV14 v14;
+        private MetadataV14 V14;
     }
 
     @Data
@@ -19,11 +19,18 @@ public class MetadataContainer {
         private Lookup lookup;
         private List<Pallet> pallets;
         private Extrinsic extrinsic;
+        private Integer type;
     }
 
     @Data
     public static class Lookup {
-        private List<Type> types;
+        private List<TypeFields> types;
+    }
+
+    @Data
+    public static class TypeFields {
+        private Integer id;
+        private Type type;
     }
 
     @Data
@@ -31,6 +38,7 @@ public class MetadataContainer {
         private List<String> path;
         private List<Param> params;
         private Def def;
+        private List<String> docs;
     }
 
     @Data
@@ -134,7 +142,10 @@ public class MetadataContainer {
 
         PRIMITIVE(String.class),
         COMPOSITE(Composite.class),
-        VARIANT(Variant.class);
+        VARIANT(Variant.class),
+        ARRAY(Array.class),
+        SEQUENCE(Sequence.class),
+        COMPACT(Compact.class);
 
 
         private final Class<?> clazz;
@@ -147,6 +158,40 @@ public class MetadataContainer {
             return clazz;
         }
     }
+
+    @Data
+    public static class Sequence {
+        private String type;
+    }
+
+    private static class SequenceType extends CustomType<Sequence> {
+        public SequenceType(Sequence value) {
+            super(value);
+        }
+
+        @Override
+        public TypeId getId() {
+            return TypeId.SEQUENCE;
+        }
+    }
+
+    //Compact type
+    @Data
+    public static class Compact {
+        private String type;
+    }
+
+    private static class CompactType extends CustomType<Compact> {
+        public CompactType(Compact value) {
+            super(value);
+        }
+
+        @Override
+        public TypeId getId() {
+            return TypeId.COMPACT;
+        }
+    }
+
 
     public static class PlainType extends CustomType<String> {
         public PlainType(String value) {
@@ -231,6 +276,28 @@ public class MetadataContainer {
     }
 
 
+    // class for            "array": {
+    //              "len": 16,
+    //              "type": 2
+    //            }
+    @Data
+    public static class Array {
+        private Integer len;
+        private Integer type;
+    }
+
+    //extend CustomType for Array
+    public static class ArrayType extends CustomType<Array> {
+        public ArrayType(Array value) {
+            super(value);
+        }
+
+        @Override
+        public TypeId getId() {
+            return TypeId.ARRAY;
+        }
+    }
+
 //    @Data
 //    public static class DoubleMapDefinition {
 //        private Hasher firstHasher;
@@ -273,4 +340,5 @@ public class MetadataContainer {
     public static class Errors {
         private Integer type;
     }
+
 }
