@@ -1,5 +1,6 @@
 package io.emeraldpay.polkaj.scaletypes.v14;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.emeraldpay.polkaj.scale.ScaleCodecReader;
 import io.emeraldpay.polkaj.scale.ScaleReader;
@@ -8,6 +9,8 @@ import io.emeraldpay.polkaj.scale.reader.ListReader;
 import io.emeraldpay.polkaj.scale.reader.UnionReader;
 
 public class MetadataReaderv14 implements ScaleReader<MetadataContainer> {
+
+    private static final Logger logger = LoggerFactory.getLogger(MetadataReaderv14.class);
 
     public static final EnumReader<MetadataContainer.Hasher> HASHER_ENUM_READER = new EnumReader<>(MetadataContainer.Hasher.values());
 
@@ -22,29 +25,30 @@ public class MetadataReaderv14 implements ScaleReader<MetadataContainer> {
 
         MetadataContainer result = new MetadataContainer();
         result.setMagicNumber(INT32_READER.read(rdr));
-        result.setMetadata(new MetadataV14().read(rdr));
+        result.setVersion(INT32_READER.read(rdr));
+        result.setMetadata(new MetadataScaleReader().read(rdr));
 
         return result;
     }
 
-    //class MetadataV14
-    static class MetadataV14 implements ScaleReader<MetadataContainer.Metadata> {
-        @Override
-        public MetadataContainer.Metadata read(ScaleCodecReader rdr) {
-            MetadataContainer.Metadata metadata = new MetadataContainer.Metadata();
-            metadata.setV14(new MetadataScaleReader().read(rdr));
-            return metadata;
-        }
-    }
+//    //class MetadataV14
+//    static class MetadataV14 implements ScaleReader<MetadataContainer.Metadata> {
+//        @Override
+//        public MetadataContainer.Metadata read(ScaleCodecReader rdr) {
+//            MetadataContainer.Metadata metadata = new MetadataContainer.Metadata();
+//            metadata.setV14(new MetadataScaleReader().read(rdr));
+//            return metadata;
+//        }
+//    }
 
-    static class MetadataScaleReader implements ScaleReader<MetadataContainer.MetadataV14> {
+    static class MetadataScaleReader implements ScaleReader<MetadataContainer.Metadata> {
 
         // ListReader for Pallets
         public static final ListReader<MetadataContainer.Pallet> MODULE_LIST_READER = new ListReader<>(new PalletReader());
 
         @Override
-        public MetadataContainer.MetadataV14 read(ScaleCodecReader rdr) {
-            MetadataContainer.MetadataV14 v14 = new MetadataContainer.MetadataV14();
+        public MetadataContainer.Metadata read(ScaleCodecReader rdr) {
+            MetadataContainer.Metadata v14 = new MetadataContainer.Metadata();
             v14.setLookup(new LookupReader().read(rdr));         // Using the LookupReader
             v14.setPallets(MODULE_LIST_READER.read(rdr));       // Assuming pallets remain a list
             v14.setExtrinsic(new ExtrinsicReader().read(rdr));  // Using the ExtrinsicReader
@@ -53,7 +57,7 @@ public class MetadataReaderv14 implements ScaleReader<MetadataContainer> {
         }
     }
 
-    static class LookupReader implements ScaleReader<MetadataContainer.Lookup> {
+    static public class LookupReader implements ScaleReader<MetadataContainer.Lookup> {
 
         // List Reader for TypeFields
         public static final ListReader<MetadataContainer.TypeFields> TYPE_FIELDS_LIST_READER = new ListReader<>(new TypeFieldsReader());
@@ -61,7 +65,7 @@ public class MetadataReaderv14 implements ScaleReader<MetadataContainer> {
         @Override
         public MetadataContainer.Lookup read(ScaleCodecReader rdr) {
             MetadataContainer.Lookup result = new MetadataContainer.Lookup();
-            System.out.println("Reading Lookup Types");
+            logger.info("Reading Lookup");
             result.setTypes(TYPE_FIELDS_LIST_READER.read(rdr));
             return result;
         }
@@ -73,14 +77,16 @@ public class MetadataReaderv14 implements ScaleReader<MetadataContainer> {
         @Override
         public MetadataContainer.TypeFields read(ScaleCodecReader rdr) {
             try {
+
+                //TODO: problem lies somewhere here
                 MetadataContainer.TypeFields result = new MetadataContainer.TypeFields();
-                System.out.println("\n Reading TypeFields ID \n");
+                logger.info("Reading TypeFields");
                 result.setId(INT32_READER.read(rdr));
-                System.out.println("\n Reading TypeFields Type \n");
+                logger.info("Reading TypeFields Type");
                 result.setType(new LookupTypesReader().read(rdr));
                 return result;
             } catch (Exception e) {
-                System.err.println("Error reading MetadataContainer: " + e.getMessage());
+                logger.error("Error reading MetadataContainer: " + e.getMessage());
                 return null; // or throw a custom exception
             }
         }
@@ -95,19 +101,18 @@ public class MetadataReaderv14 implements ScaleReader<MetadataContainer> {
         public MetadataContainer.Type read(ScaleCodecReader rdr) {
             try {
                 MetadataContainer.Type result = new MetadataContainer.Type();
-
-                System.out.println("\n Reading Type Path \n");
+                logger.info("Reading Type Path");
                 result.setPath(STRING_LIST_READER.read(rdr));
-                System.out.println("\n Reading Type Params \n");
+                logger.info("Reading Type Params");
                 result.setParams(PARAM_LIST_READER.read(rdr));
-                System.out.println("\n Reading Type Def \n");
+                logger.info("Reading Type Def");
                 result.setDef(DEF_READER.read(rdr));
 
-                System.out.println("\n Reading Type Docs");
+                logger.info("Reading Type Docs");
                 result.setDocs(STRING_LIST_READER.read(rdr));
                 return result;
             } catch (Exception e) {
-                System.err.println("Error reading MetadataContainer: " + e.getMessage());
+                logger.error("Error reading MetadataContainer: " + e.getMessage());
                 return null; // or throw a custom exception
             }
         }
@@ -220,28 +225,41 @@ public class MetadataReaderv14 implements ScaleReader<MetadataContainer> {
     }
 
     // ExtrinsicReader
-    static class ExtrinsicReader implements ScaleReader<MetadataContainer.Extrinsic> {
+    static public class ExtrinsicReader implements ScaleReader<MetadataContainer.Extrinsic> {
         public static final ListReader<MetadataContainer.SignedExtension> SIGNED_EXTENSION_LIST_READER = new ListReader<>(new SignedExtension());
 
         @Override
         public MetadataContainer.Extrinsic read(ScaleCodecReader rdr) {
             MetadataContainer.Extrinsic result = new MetadataContainer.Extrinsic();
-            result.setType(INT32_READER.read(rdr));
-            result.setVersion(INT32_READER.read(rdr));
-            result.setSignedExtensions(SIGNED_EXTENSION_LIST_READER.read(rdr));
+
+            try {
+                result.setType(INT32_READER.read(rdr));
+                result.setVersion(INT32_READER.read(rdr));
+                result.setSignedExtensions(SIGNED_EXTENSION_LIST_READER.read(rdr));
+            } catch (Exception e) {
+                //print entire stack trace
+                logger.error("Error reading ExtrinsicReader: " + e);
+                e.printStackTrace();
+                return null; // or throw a custom exception
+            }
             return result;
         }
-
     }
 
 
-    static class SignedExtension implements ScaleReader<MetadataContainer.SignedExtension> {
+    static public class SignedExtension implements ScaleReader<MetadataContainer.SignedExtension> {
         @Override
         public MetadataContainer.SignedExtension read(ScaleCodecReader rdr) {
+            logger.info("Reading SignedExtension");
             MetadataContainer.SignedExtension result = new MetadataContainer.SignedExtension();
-            result.setIdentifier(rdr.readString());
-            result.setType(INT32_READER.read(rdr));
-            result.setAdditionalSigned(INT32_READER.read(rdr));
+            try {
+                result.setIdentifier(rdr.readString());
+                result.setType(INT32_READER.read(rdr));
+                result.setAdditionalSigned(INT32_READER.read(rdr));
+            }catch (Exception e){
+                logger.error("Error reading MetadataContainer.SignedExtension: " + e);
+                return null; // or throw a custom exception
+            }
             return result;
         }
     }
@@ -317,7 +335,6 @@ public class MetadataReaderv14 implements ScaleReader<MetadataContainer> {
 
             class CompositeReader implements ScaleReader<MetadataContainer.Composite> {
 
-                //TODO: debug this
                 @Override
                 public MetadataContainer.Composite read(ScaleCodecReader rdr) {
                     MetadataContainer.Composite result = new MetadataContainer.Composite();
@@ -336,7 +353,6 @@ public class MetadataReaderv14 implements ScaleReader<MetadataContainer> {
 
             class VariantReader implements ScaleReader<MetadataContainer.Variant> {
 
-                //TODO: debug this
                 @Override
                 public MetadataContainer.Variant read(ScaleCodecReader rdr) {
                     MetadataContainer.Variant result = new MetadataContainer.Variant();

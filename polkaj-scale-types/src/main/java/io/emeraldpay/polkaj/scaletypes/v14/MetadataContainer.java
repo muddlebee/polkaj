@@ -7,15 +7,16 @@ import java.util.List;
 @Data
 public class MetadataContainer {
     private Integer magicNumber;
+    private Integer version;
     private Metadata metadata;
+
+//    @Data
+//    public static class Metadata {
+//        private MetadataV14 V14;
+//    }
 
     @Data
     public static class Metadata {
-        private MetadataV14 V14;
-    }
-
-    @Data
-    public static class MetadataV14 {
         private Lookup lookup;
         private List<Pallet> pallets;
         private Extrinsic extrinsic;

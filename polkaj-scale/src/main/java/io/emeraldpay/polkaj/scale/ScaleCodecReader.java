@@ -6,11 +6,15 @@ import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * SCALE codec reader
  */
 public class ScaleCodecReader {
+
+    private static final Logger logger = LoggerFactory.getLogger(ScaleCodecReader.class);
 
     public static final UByteReader UBYTE = new UByteReader();
     public static final UInt16Reader UINT16 = new UInt16Reader();
@@ -28,14 +32,10 @@ public class ScaleCodecReader {
 
     public ScaleCodecReader(byte[] source) {
         this.source = source;
-        //print the byte array
-        System.out.println("source: " + source);
-        System.out.println();
-        System.out.println("Received data: " + Arrays.toString(source));
-        //print space below
-        System.out.println();
         String decodedString = new String(source, StandardCharsets.UTF_8);
-        System.out.println("decodedString :" + decodedString);
+
+        //print length of source
+        logger.info("source.length: {}", source.length);
     }
 
     /**
@@ -79,9 +79,8 @@ public class ScaleCodecReader {
         if (!hasNext()) {
             throw new IndexOutOfBoundsException("Cannot read " + pos + " of " + source.length);
         }
-        System.out.println("pos: " + pos);
-        //print source[pos]
-        System.out.println("source[pos]: " + source[pos]);
+        logger.info("pos: {}", pos);
+        logger.info("source[pos]: {}", source[pos]);
         return source[pos++];
     }
 
@@ -96,7 +95,7 @@ public class ScaleCodecReader {
         if (scaleReader == null) {
             throw new NullPointerException("ItemReader cannot be null");
         }
-        System.out.println("Decoding field of type: " + scaleReader.getClass().getSimpleName());
+        logger.info("Decoding field of type: {}", scaleReader.getClass().getSimpleName());
         return scaleReader.read(this);
     }
 
@@ -119,6 +118,9 @@ public class ScaleCodecReader {
     public int readCompactInt() {
         return COMPACT_UINT.read(this);
     }
+//    public BigInteger readCompactInt() {
+//        return COMPACT_UINT.read(this);
+//    }
 
     //readCompactBigInt
     public BigInteger readCompactBigInt() {
@@ -159,6 +161,12 @@ public class ScaleCodecReader {
         return readByteArray(len);
     }
 
+//    public byte[] readByteArray() {
+//        BigInteger len = readCompactInt();
+//        return readByteArray(len.intValue());
+//    }
+
+
     public byte[] readByteArrayBigInt() {
         BigInteger len = readCompactBigInt();
 
@@ -170,16 +178,18 @@ public class ScaleCodecReader {
     }
 
     public byte[] readByteArray(int len) {
-        //print all info
-        System.out.println("len: " + len);
-        System.out.println("pos: " + pos);
-        System.out.println("source.length: " + source.length);
+        logger.info("len: {}", len);
+        logger.info("pos: {}", pos);
+        logger.info("source.length: {}", source.length);
         if (pos + len > source.length) {
             throw new IllegalArgumentException("Not enough data to read " + len + " bytes");
         }
         byte[] result = new byte[len];
         System.arraycopy(source, pos, result, 0, result.length);
         pos += len;
+        logger.info("");
+        logger.info("result : {}", Arrays.toString(result));
+        logger.info("");
         return result;
     }
 

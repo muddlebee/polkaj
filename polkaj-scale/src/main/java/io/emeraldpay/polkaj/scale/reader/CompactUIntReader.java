@@ -13,7 +13,6 @@ public class CompactUIntReader implements ScaleReader<Integer> {
      */
     @Override
     public Integer read(ScaleCodecReader rdr) {
-        try {
             int i = rdr.readUByte();
             CompactMode mode = CompactMode.byValue((byte) (i & 0b11));
             System.out.println("mode: " + mode);
@@ -31,13 +30,5 @@ public class CompactUIntReader implements ScaleReader<Integer> {
                         (rdr.readUByte() << (6 + 2 * 8));
             }
             throw new UnsupportedOperationException("Mode " + mode + " is not implemented");
-        } catch (UnsupportedOperationException e) {
-            System.out.println(e.getMessage());
-            if (e.getMessage().contains("Mode BIGINT is not implemented")) {
-                return rdr.readCompactBigInt().intValue();
-            } else {
-                throw e;
-            }
-        }
     }
 }

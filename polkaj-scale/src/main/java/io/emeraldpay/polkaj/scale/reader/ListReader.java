@@ -2,11 +2,14 @@ package io.emeraldpay.polkaj.scale.reader;
 
 import io.emeraldpay.polkaj.scale.ScaleReader;
 import io.emeraldpay.polkaj.scale.ScaleCodecReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ListReader<T> implements ScaleReader<List<T>> {
+    private static final Logger logger = LoggerFactory.getLogger(ListReader.class);
 
     private ScaleReader<T> scaleReader;
 
