@@ -17,7 +17,7 @@ class ExtrinsicReaderTest extends Specification {
     def "Test read method"() {
         setup:
         String hex = this.getClass().getClassLoader().getResourceAsStream("hex.txt").text
-        byte[] data = Hex.decodeHex(hex.substring(2))
+        byte[] data = Hex.decodeHex(hex)
         ScaleCodecReader rdr = new ScaleCodecReader(data)
 
         when:
@@ -25,7 +25,19 @@ class ExtrinsicReaderTest extends Specification {
 
         then:
         result != null
-        // Add more assertions here based on the expected result
+        result.type == 870
+        result.version == 4
+        // assert signedExtensions first element is "CheckVersion"
+        with(result.signedExtensions[0]) {
+            identifier == "CheckNonZeroSender"
+            type == 872
+            additionalSigned == 50
+        }
+        with(result.signedExtensions[1]) {
+            identifier == "CheckSpecVersion"
+            type == 873
+            additionalSigned == 4
+        }
     }
 
     def "Test read method with large list"() {

@@ -233,8 +233,8 @@ public class MetadataReaderv14 implements ScaleReader<MetadataContainer> {
             MetadataContainer.Extrinsic result = new MetadataContainer.Extrinsic();
 
             try {
-                result.setType(INT32_READER.read(rdr));
-                result.setVersion(INT32_READER.read(rdr));
+                result.setType(rdr.readCompactInt());
+                result.setVersion(rdr.readUByte());
                 result.setSignedExtensions(SIGNED_EXTENSION_LIST_READER.read(rdr));
             } catch (Exception e) {
                 //print entire stack trace
@@ -254,8 +254,8 @@ public class MetadataReaderv14 implements ScaleReader<MetadataContainer> {
             MetadataContainer.SignedExtension result = new MetadataContainer.SignedExtension();
             try {
                 result.setIdentifier(rdr.readString());
-                result.setType(INT32_READER.read(rdr));
-                result.setAdditionalSigned(INT32_READER.read(rdr));
+                result.setType(rdr.readCompactInt());
+                result.setAdditionalSigned(rdr.readCompactInt());
             }catch (Exception e){
                 logger.error("Error reading MetadataContainer.SignedExtension: " + e);
                 return null; // or throw a custom exception
