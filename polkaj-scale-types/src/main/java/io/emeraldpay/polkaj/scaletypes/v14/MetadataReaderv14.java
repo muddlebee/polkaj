@@ -81,7 +81,7 @@ public class MetadataReaderv14 implements ScaleReader<MetadataContainer> {
                 //TODO: problem lies somewhere here
                 MetadataContainer.TypeFields result = new MetadataContainer.TypeFields();
                 logger.info("Reading TypeFields");
-                result.setId(INT32_READER.read(rdr));
+                result.setId(rdr.readCompactInt());
                 logger.info("Reading TypeFields Type");
                 result.setType(new LookupTypesReader().read(rdr));
                 return result;
@@ -93,9 +93,9 @@ public class MetadataReaderv14 implements ScaleReader<MetadataContainer> {
     }
 
     public static class LookupTypesReader implements ScaleReader<MetadataContainer.Type> {
-        public static final ListReader<String> STRING_LIST_READER = new ListReader<>(ScaleCodecReader.STRING);
-        public static final ListReader<MetadataContainer.Param> PARAM_LIST_READER = new ListReader<>(new ParamReader());
-        public static final DefReader DEF_READER = new DefReader();
+        private static final ListReader<String> STRING_LIST_READER = new ListReader<>(ScaleCodecReader.STRING);
+        private static final ListReader<MetadataContainer.Param> PARAM_LIST_READER = new ListReader<>(new ParamReader());
+        private static final DefReader DEF_READER = new DefReader();
 
         @Override
         public MetadataContainer.Type read(ScaleCodecReader rdr) {
@@ -107,7 +107,6 @@ public class MetadataReaderv14 implements ScaleReader<MetadataContainer> {
                 result.setParams(PARAM_LIST_READER.read(rdr));
                 logger.info("Reading Type Def");
                 result.setDef(DEF_READER.read(rdr));
-
                 logger.info("Reading Type Docs");
                 result.setDocs(STRING_LIST_READER.read(rdr));
                 return result;
@@ -135,15 +134,7 @@ public class MetadataReaderv14 implements ScaleReader<MetadataContainer> {
             public MetadataContainer.Param read(ScaleCodecReader rdr) {
                 MetadataContainer.Param result = new MetadataContainer.Param();
                 result.setName(rdr.readString());
-                result.setType(INT32_READER.read(rdr));
-//
-//                Integer type = INT32_READER.read(rdr);
-//                if (type != null) {
-//                    result.setType(type);
-//                } else {
-//                    // Handle null type here. For example, set a default value or leave it as null.
-//                    // result.setType(defaultValue);
-//                }
+                result.setType(rdr.readCompactInt());
                 return result;
             }
         }
@@ -196,7 +187,7 @@ public class MetadataReaderv14 implements ScaleReader<MetadataContainer> {
         @Override
         public MetadataContainer.Calls read(ScaleCodecReader rdr) {
             MetadataContainer.Calls calls = new MetadataContainer.Calls();
-            calls.setType(ScaleCodecReader.INT32.read(rdr));
+            calls.setType(rdr.readCompactInt());
             return calls;
         }
     }
@@ -205,8 +196,9 @@ public class MetadataReaderv14 implements ScaleReader<MetadataContainer> {
         public MetadataContainer.CallVariant read(ScaleCodecReader rdr) {
             MetadataContainer.CallVariant result = new MetadataContainer.CallVariant();
             result.setName(rdr.readString());
-            result.setIndex(INT32_READER.read(rdr));
             result.setFields(new ListReader<>(new FieldReader()).read(rdr));
+            //TODO " index: u8;" in docs
+            result.setIndex(rdr.readUByte());
             result.setDocs(STRING_LIST_READER.read(rdr));
             return result;
         }
@@ -215,8 +207,10 @@ public class MetadataReaderv14 implements ScaleReader<MetadataContainer> {
             @Override
             public MetadataContainer.Field read(ScaleCodecReader rdr) {
                 MetadataContainer.Field result = new MetadataContainer.Field();
+                //TODO:optional
                 result.setName(rdr.readString());
-                result.setType(INT32_READER.read(rdr));
+                result.setType(rdr.readCompactInt());
+                //TODO:optional
                 result.setTypeName(rdr.readString());
                 result.setDocs(STRING_LIST_READER.read(rdr));
                 return result;
@@ -309,6 +303,7 @@ public class MetadataReaderv14 implements ScaleReader<MetadataContainer> {
 //        }
 //    }
 
+    //TODO: review
     static class DefTypeReader implements ScaleReader<MetadataContainer.CustomType<?>> {
 
         @SuppressWarnings("unchecked")
@@ -359,6 +354,72 @@ public class MetadataReaderv14 implements ScaleReader<MetadataContainer> {
                     result.setVariants(new ListReader<>(new CallVariantReader()).read(rdr));
                     return result;
                 }
+            }
+        }
+
+        static class SequenceReader implements ScaleReader<MetadataContainer.Sequence> {
+            @Override
+            public MetadataContainer.Sequence read(ScaleCodecReader rdr) {
+                MetadataContainer.Sequence result = new MetadataContainer.Sequence();
+                result.setType(rdr.readCompactInt());
+                return result;
+            }
+        }
+
+        //ArrayReader
+        static class ArrayReader implements ScaleReader<MetadataContainer.Array> {
+            @Override
+            public MetadataContainer.Array read(ScaleCodecReader rdr) {
+                MetadataContainer.Array result = new MetadataContainer.Array();
+                //TODO "len: u32;" in docs
+                result.setLen(rdr.readUint32());
+                result.setType(rdr.readCompactInt());
+                return result;
+            }
+        }
+
+        //TODO: review TupleReader
+        //TupleReader
+        static class TupleReader implements ScaleReader<MetadataContainer.IntegerList> {
+
+            //IntegerListReader
+            public static final ListReader<Integer> INT32_LIST_READER = new ListReader<>(ScaleCodecReader.COMPACT_UINT);
+
+            @Override
+            public MetadataContainer.IntegerList read(ScaleCodecReader rdr) {
+                MetadataContainer.IntegerList result = new MetadataContainer.IntegerList();
+                result.addAll(INT32_LIST_READER.read(rdr));
+                return result;
+            }
+        }
+
+        //CompactReader
+        static class CompactReader implements ScaleReader<MetadataContainer.Compact> {
+            @Override
+            public MetadataContainer.Compact read(ScaleCodecReader rdr) {
+                MetadataContainer.Compact result = new MetadataContainer.Compact();
+                result.setType(rdr.readCompactInt());
+                return result;
+            }
+        }
+
+        //BitSequenceReader
+        static class BitSequenceReader implements ScaleReader<MetadataContainer.BitSequence> {
+            @Override
+            public MetadataContainer.BitSequence read(ScaleCodecReader rdr) {
+                MetadataContainer.BitSequence result = new MetadataContainer.BitSequence();
+                result.setBitOrderType(rdr.readCompactInt());
+                result.setBitStoreType(rdr.readCompactInt());
+                return result;
+            }
+        }
+
+        //HistoricMetaReader
+        static class HistoricMetaReader implements ScaleReader<MetadataContainer.HistoricMeta> {
+            @Override
+            public MetadataContainer.HistoricMeta read(ScaleCodecReader rdr) {
+                MetadataContainer.HistoricMeta result = new MetadataContainer.HistoricMeta(rdr.readString());
+                return result;
             }
         }
     }

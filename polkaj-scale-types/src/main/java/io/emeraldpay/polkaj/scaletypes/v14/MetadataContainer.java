@@ -2,6 +2,7 @@ package io.emeraldpay.polkaj.scaletypes.v14;
 
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -141,13 +142,17 @@ public class MetadataContainer {
 
         //   DOUBLEMAP(DoubleMapDefinition.class);
 
-        PRIMITIVE(String.class),
         COMPOSITE(Composite.class),
         VARIANT(Variant.class),
         ARRAY(Array.class),
         SEQUENCE(Sequence.class),
-        COMPACT(Compact.class);
+        TUPLE(IntegerList.class),
 
+        //TODO: Si1TypeDefPrimitive
+        PRIMITIVE(String.class),
+        COMPACT(Compact.class),
+        BIT_SEQUENCE(BitSequence.class),
+        HISTORIC_META(String.class);
 
         private final Class<?> clazz;
 
@@ -160,9 +165,51 @@ public class MetadataContainer {
         }
     }
 
+    //BitSequence
+    @Data
+    public static class BitSequence{
+        /**
+         *    readonly bitStoreType
+         *     readonly bitOrderType
+         */
+        private Integer bitStoreType;
+        private Integer bitOrderType;
+    }
+
+    //BitSequenceType
+    public static class BitSequenceType extends CustomType<BitSequence> {
+        public BitSequenceType(BitSequence value) {
+            super(value);
+        }
+
+        @Override
+        public TypeId getId() {
+            return TypeId.BIT_SEQUENCE;
+        }
+    }
+
+
+    @Data
+    public static class IntegerList extends ArrayList<Integer> {
+    }
+
+
+    //TupleType
+    public static class TupleType extends CustomType<IntegerList> {
+        public TupleType(IntegerList value) {
+            super(value);
+        }
+
+        @Override
+        public TypeId getId() {
+            return TypeId.TUPLE;
+        }
+    }
+
+
     @Data
     public static class Sequence {
-        private String type;
+        private Integer type;
     }
 
     private static class SequenceType extends CustomType<Sequence> {
@@ -179,7 +226,7 @@ public class MetadataContainer {
     //Compact type
     @Data
     public static class Compact {
-        private String type;
+        private Integer type;
     }
 
     private static class CompactType extends CustomType<Compact> {
@@ -235,6 +282,18 @@ public class MetadataContainer {
         }
     }
 
+    //HistoricMeta type
+    public static class HistoricMeta extends CustomType<String> {
+        public HistoricMeta(String value) {
+            super(value);
+        }
+
+        @Override
+        public TypeId getId() {
+            return TypeId.HISTORIC_META;
+        }
+    }
+
     //Variant type
     @Data
     public static class Variant {
@@ -283,7 +342,7 @@ public class MetadataContainer {
     //            }
     @Data
     public static class Array {
-        private Integer len;
+        private Long len;
         private Integer type;
     }
 
@@ -341,5 +400,6 @@ public class MetadataContainer {
     public static class Errors {
         private Integer type;
     }
+
 
 }
