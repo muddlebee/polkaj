@@ -189,7 +189,6 @@ public class MetadataContainer {
     }
 
 
-    @Data
     public static class IntegerList extends ArrayList<Integer> {
     }
 
