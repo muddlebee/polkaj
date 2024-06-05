@@ -143,12 +143,51 @@ public class MetadataReaderv14 implements ScaleReader<MetadataContainer> {
     static class PalletReader implements ScaleReader<MetadataContainer.Pallet> {
         public static final ListReader<MetadataContainer.CallVariant> CALL_VARIANT_LIST_READER = new ListReader<>(new CallVariantReader());
 
+        //TODO: PalletMetadataV14 Optional
         @Override
         public MetadataContainer.Pallet read(ScaleCodecReader rdr) {
             MetadataContainer.Pallet result = new MetadataContainer.Pallet();
             result.setName(rdr.readString());
             result.setStorage(new StorageReader().read(rdr));
             result.setCalls(new CallsReader().read(rdr));
+            result.setEvents(new EventReader().read(rdr));
+            result.setConstants(new ListReader<>(new ConstantReader()).read(rdr));
+            result.setErrors(new ErrorsReader().read(rdr));
+            result.setIndex(rdr.readUByte());
+            return result;
+        }
+
+    }
+
+    //ErrorReader
+    static class ErrorsReader implements ScaleReader<MetadataContainer.Errors> {
+        @Override
+        public MetadataContainer.Errors read(ScaleCodecReader rdr) {
+            MetadataContainer.Errors result = new MetadataContainer.Errors();
+            result.setType(rdr.readCompactInt());
+            return result;
+        }
+    }
+
+    //ConstantReader
+    static class ConstantReader implements ScaleReader<MetadataContainer.Constant> {
+        @Override
+        public MetadataContainer.Constant read(ScaleCodecReader rdr) {
+            MetadataContainer.Constant result = new MetadataContainer.Constant();
+            result.setName(rdr.readString());
+            result.setType(rdr.readCompactInt());
+            result.setValue(rdr.readByteArray());
+            result.setDocs(STRING_LIST_READER.read(rdr));
+            return result;
+        }
+    }
+
+    //EventReader
+    static class EventReader implements ScaleReader<MetadataContainer.Events> {
+        @Override
+        public MetadataContainer.Events read(ScaleCodecReader rdr) {
+            MetadataContainer.Events result = new MetadataContainer.Events();
+            result.setType(rdr.readCompactInt());
             return result;
         }
     }
@@ -307,7 +346,9 @@ public class MetadataReaderv14 implements ScaleReader<MetadataContainer> {
     static class DefTypeReader implements ScaleReader<MetadataContainer.CustomType<?>> {
 
         @SuppressWarnings("unchecked")
-        public static final UnionReader<MetadataContainer.CustomType<?>> DEF_UNION_READER = new UnionReader<>(new PrimitiveTypeReader(), new CompositeTypeReader(), new VariantTypeReader());
+        public static final UnionReader<MetadataContainer.CustomType<?>> DEF_UNION_READER = new UnionReader<>(new PrimitiveTypeReader(),
+                new CompositeTypeReader(), new VariantTypeReader(), new SequenceReader(), new ArrayReader(), new TupleReader(),
+                new CompactReader(), new BitSequenceReader(), new HistoricMetaReader());
 
         @Override
         public MetadataContainer.CustomType<?> read(ScaleCodecReader rdr) {
@@ -357,68 +398,72 @@ public class MetadataReaderv14 implements ScaleReader<MetadataContainer> {
             }
         }
 
-        static class SequenceReader implements ScaleReader<MetadataContainer.Sequence> {
+        static class SequenceReader implements ScaleReader<MetadataContainer.SequenceType> {
             @Override
-            public MetadataContainer.Sequence read(ScaleCodecReader rdr) {
-                MetadataContainer.Sequence result = new MetadataContainer.Sequence();
-                result.setType(rdr.readCompactInt());
+            public MetadataContainer.SequenceType read(ScaleCodecReader rdr) {
+                MetadataContainer.Sequence sequence = new MetadataContainer.Sequence();
+                sequence.setType(rdr.readCompactInt());
+                MetadataContainer.SequenceType result = new MetadataContainer.SequenceType(sequence);
                 return result;
             }
         }
 
         //ArrayReader
-        static class ArrayReader implements ScaleReader<MetadataContainer.Array> {
+        static class ArrayReader implements ScaleReader<MetadataContainer.ArrayType> {
             @Override
-            public MetadataContainer.Array read(ScaleCodecReader rdr) {
-                MetadataContainer.Array result = new MetadataContainer.Array();
+            public MetadataContainer.ArrayType read(ScaleCodecReader rdr) {
+                MetadataContainer.Array array = new MetadataContainer.Array();
                 //TODO "len: u32;" in docs
-                result.setLen(rdr.readUint32());
-                result.setType(rdr.readCompactInt());
+                array.setLen(rdr.readUint32());
+                array.setType(rdr.readCompactInt());
+                MetadataContainer.ArrayType result = new MetadataContainer.ArrayType(array);
                 return result;
             }
         }
 
-        //TODO: review TupleReader
         //TupleReader
-        static class TupleReader implements ScaleReader<MetadataContainer.IntegerList> {
+        static class TupleReader implements ScaleReader<MetadataContainer.TupleType> {
 
-            //IntegerListReader
+            //TupleTypeReader
             public static final ListReader<Integer> INT32_LIST_READER = new ListReader<>(ScaleCodecReader.COMPACT_UINT);
 
             @Override
-            public MetadataContainer.IntegerList read(ScaleCodecReader rdr) {
-                MetadataContainer.IntegerList result = new MetadataContainer.IntegerList();
-                result.addAll(INT32_LIST_READER.read(rdr));
+            public MetadataContainer.TupleType read(ScaleCodecReader rdr) {
+                MetadataContainer.IntegerList integerList = new MetadataContainer.IntegerList();
+                integerList.addAll(INT32_LIST_READER.read(rdr));
+                MetadataContainer.TupleType result = new MetadataContainer.TupleType(integerList);
                 return result;
             }
         }
 
         //CompactReader
-        static class CompactReader implements ScaleReader<MetadataContainer.Compact> {
+        static class CompactReader implements ScaleReader<MetadataContainer.CompactType> {
             @Override
-            public MetadataContainer.Compact read(ScaleCodecReader rdr) {
-                MetadataContainer.Compact result = new MetadataContainer.Compact();
-                result.setType(rdr.readCompactInt());
+            public MetadataContainer.CompactType read(ScaleCodecReader rdr) {
+                MetadataContainer.Compact compact = new MetadataContainer.Compact();
+                compact.setType(rdr.readCompactInt());
+                MetadataContainer.CompactType result = new MetadataContainer.CompactType(compact);
                 return result;
             }
         }
 
         //BitSequenceReader
-        static class BitSequenceReader implements ScaleReader<MetadataContainer.BitSequence> {
+        static class BitSequenceReader implements ScaleReader<MetadataContainer.BitSequenceType> {
             @Override
-            public MetadataContainer.BitSequence read(ScaleCodecReader rdr) {
-                MetadataContainer.BitSequence result = new MetadataContainer.BitSequence();
-                result.setBitOrderType(rdr.readCompactInt());
-                result.setBitStoreType(rdr.readCompactInt());
+            public MetadataContainer.BitSequenceType read(ScaleCodecReader rdr) {
+                MetadataContainer.BitSequence bitSequence = new MetadataContainer.BitSequence();
+                bitSequence.setBitOrderType(rdr.readCompactInt());
+                bitSequence.setBitStoreType(rdr.readCompactInt());
+                MetadataContainer.BitSequenceType result = new MetadataContainer.BitSequenceType(bitSequence);
                 return result;
             }
         }
 
         //HistoricMetaReader
-        static class HistoricMetaReader implements ScaleReader<MetadataContainer.HistoricMeta> {
+        static class HistoricMetaReader implements ScaleReader<MetadataContainer.HistoricMetaType> {
             @Override
-            public MetadataContainer.HistoricMeta read(ScaleCodecReader rdr) {
-                MetadataContainer.HistoricMeta result = new MetadataContainer.HistoricMeta(rdr.readString());
+            public MetadataContainer.HistoricMetaType read(ScaleCodecReader rdr) {
+                MetadataContainer.HistoricMetaType result = new MetadataContainer.HistoricMetaType(rdr.readString());
                 return result;
             }
         }

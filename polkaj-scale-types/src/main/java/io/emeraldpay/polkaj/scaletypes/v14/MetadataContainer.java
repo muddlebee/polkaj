@@ -212,7 +212,7 @@ public class MetadataContainer {
         private Integer type;
     }
 
-    private static class SequenceType extends CustomType<Sequence> {
+    public static class SequenceType extends CustomType<Sequence> {
         public SequenceType(Sequence value) {
             super(value);
         }
@@ -229,7 +229,7 @@ public class MetadataContainer {
         private Integer type;
     }
 
-    private static class CompactType extends CustomType<Compact> {
+    public  static class CompactType extends CustomType<Compact> {
         public CompactType(Compact value) {
             super(value);
         }
@@ -283,8 +283,8 @@ public class MetadataContainer {
     }
 
     //HistoricMeta type
-    public static class HistoricMeta extends CustomType<String> {
-        public HistoricMeta(String value) {
+    public static class HistoricMetaType extends CustomType<String> {
+        public HistoricMetaType(String value) {
             super(value);
         }
 

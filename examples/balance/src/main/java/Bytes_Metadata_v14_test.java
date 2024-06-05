@@ -14,8 +14,8 @@ public class Bytes_Metadata_v14_test {
 
     public static void main(String[] args) throws Exception {
 
-            // String api = "wss://westend.api.onfinality.io/public-ws";
-        String api = "wss://polkadot-rpc.dwellir.com";
+        //     String api = "wss://westend.api.onfinality.io/public-ws";
+         String api = "wss://polkadot-rpc.dwellir.com";
 
         if (args.length >= 1) {
                 api = args[0];
