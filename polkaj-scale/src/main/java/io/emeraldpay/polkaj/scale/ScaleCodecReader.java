@@ -201,8 +201,34 @@ public class ScaleCodecReader {
     public String readString() {
         return new String(readByteArray());
     }
+//
+//    public String readBigString() {
+//        return new String(readByteArrayBigInt());
+//    }
+//
+//    public String readCompactString() {
+//       // read bytes till null or empty
+//        StringBuilder sb = new StringBuilder();
+//        while (hasNext()) {
+//            char c = (char) readByte();
+//            if (c == 0) {
+//                break;
+//            }
+//            sb.append(c);
+//        }
+//
+//        //skip empty bytes till next byte
+//        while (hasNext() && peek() == 0) {
+//            readByte();
+//        }
+//
+//        return sb.toString();
+//    }
 
-    public String readBigString() {
-        return new String(readByteArrayBigInt());
+    public char peek() {
+        if (!hasNext()) {
+            throw new IndexOutOfBoundsException("Cannot read " + pos + " of " + source.length);
+        }
+        return (char) source[pos];
     }
 }

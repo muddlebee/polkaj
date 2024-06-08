@@ -149,7 +149,7 @@ public class MetadataContainer {
         TUPLE(IntegerList.class),
 
         //TODO: Si1TypeDefPrimitive
-        PRIMITIVE(String.class),
+        PRIMITIVE(Integer.class),
         COMPACT(Compact.class),
         BIT_SEQUENCE(BitSequence.class),
         HISTORIC_META(String.class);
@@ -270,8 +270,8 @@ public class MetadataContainer {
     }
 
     // Primitive type
-    public static class PrimitiveType extends CustomType<String> {
-        public PrimitiveType(String value) {
+    public static class PrimitiveType extends CustomType<Integer> {
+        public PrimitiveType(Integer value) {
             super(value);
         }
 

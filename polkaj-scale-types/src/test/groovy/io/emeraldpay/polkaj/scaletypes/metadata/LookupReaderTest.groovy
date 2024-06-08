@@ -1,7 +1,6 @@
 package io.emeraldpay.polkaj.scaletypes.metadata
 
 import io.emeraldpay.polkaj.scale.ScaleCodecReader
-import io.emeraldpay.polkaj.scale.ScaleReader
 import io.emeraldpay.polkaj.scaletypes.v14.MetadataReaderv14
 import org.apache.commons.codec.binary.Hex
 import spock.lang.Specification

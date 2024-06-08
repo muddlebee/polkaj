@@ -57,4 +57,14 @@ class CompactUIntReaderSpec extends Specification {
         then:
         thrown(UnsupportedOperationException)
     }
+
+    //TODO: add test for 8 byte int
+    def "reads unsigned array"(){
+        expect:
+        def codec = new ScaleCodecReader(Hex.decodeHex(encoded))
+        codec.hasNext()
+        codec.read(reader) == value
+        !codec.hasNext()
+
+    }
 }
