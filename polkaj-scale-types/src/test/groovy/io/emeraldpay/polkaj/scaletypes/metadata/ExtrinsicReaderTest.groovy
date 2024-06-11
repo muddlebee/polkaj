@@ -16,7 +16,7 @@ class ExtrinsicReaderTest extends Specification {
 
     def "Test read method"() {
         setup:
-        String hex = this.getClass().getClassLoader().getResourceAsStream("hex.txt").text
+        String hex = this.getClass().getClassLoader().getResourceAsStream("metadata-extrinsic-hex.txt").text
         byte[] data = Hex.decodeHex(hex)
         ScaleCodecReader rdr = new ScaleCodecReader(data)
 

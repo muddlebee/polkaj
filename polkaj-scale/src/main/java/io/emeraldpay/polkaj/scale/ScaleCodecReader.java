@@ -32,10 +32,6 @@ public class ScaleCodecReader {
 
     public ScaleCodecReader(byte[] source) {
         this.source = source;
-        String decodedString = new String(source, StandardCharsets.UTF_8);
-
-        //print length of source
-        logger.info("source.length: {}", source.length);
     }
 
     /**
@@ -93,10 +89,13 @@ public class ScaleCodecReader {
      */
     public <T> T read(ScaleReader<T> scaleReader) {
         if (scaleReader == null) {
-            throw new NullPointerException("ItemReader cannot be null");
+            throw new IllegalArgumentException("ScaleReader cannot be null");
         }
-        logger.info("Decoding field of type: {}", scaleReader.getClass().getSimpleName());
-        return scaleReader.read(this);
+        try {
+            return scaleReader.read(this);
+        } catch (Exception e) {
+            throw e;
+        }
     }
 
     public int readUByte() {
@@ -166,16 +165,16 @@ public class ScaleCodecReader {
 //        return readByteArray(len.intValue());
 //    }
 
-
-    public byte[] readByteArrayBigInt() {
-        BigInteger len = readCompactBigInt();
-
-        //implement readByteArrayBigInt
-        if (len.compareTo(BigInteger.valueOf(Integer.MAX_VALUE)) > 0) {
-            throw new IllegalArgumentException("Length is too big: " + len);
-        }
-        return readByteArray(len.intValue());
-    }
+//
+//    public byte[] readByteArrayBigInt() {
+//        BigInteger len = readCompactBigInt();
+//
+//        //implement readByteArrayBigInt
+//        if (len.compareTo(BigInteger.valueOf(Integer.MAX_VALUE)) > 0) {
+//            throw new IllegalArgumentException("Length is too big: " + len);
+//        }
+//        return readByteArray(len.intValue());
+//    }
 
     public byte[] readByteArray(int len) {
         logger.info("len: {}", len);
@@ -201,34 +200,5 @@ public class ScaleCodecReader {
     public String readString() {
         return new String(readByteArray());
     }
-//
-//    public String readBigString() {
-//        return new String(readByteArrayBigInt());
-//    }
-//
-//    public String readCompactString() {
-//       // read bytes till null or empty
-//        StringBuilder sb = new StringBuilder();
-//        while (hasNext()) {
-//            char c = (char) readByte();
-//            if (c == 0) {
-//                break;
-//            }
-//            sb.append(c);
-//        }
-//
-//        //skip empty bytes till next byte
-//        while (hasNext() && peek() == 0) {
-//            readByte();
-//        }
-//
-//        return sb.toString();
-//    }
 
-    public char peek() {
-        if (!hasNext()) {
-            throw new IndexOutOfBoundsException("Cannot read " + pos + " of " + source.length);
-        }
-        return (char) source[pos];
-    }
 }
