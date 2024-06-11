@@ -240,8 +240,8 @@ public class MetadataContainer {
     }
 
 
-    public static class PlainType extends CustomType<String> {
-        public PlainType(String value) {
+    public static class PlainType extends CustomType<Integer> {
+        public PlainType(Integer value) {
             super(value);
         }
 
@@ -253,9 +253,9 @@ public class MetadataContainer {
 
     @Data
     public static class MapDefinition {
-        private Hasher hasher;
-        private String key;
-        private String type;
+        private List<Hasher> hashers;
+        private Integer key;
+        private Integer value;
     }
 
     public static class MapType extends CustomType<MapDefinition> {

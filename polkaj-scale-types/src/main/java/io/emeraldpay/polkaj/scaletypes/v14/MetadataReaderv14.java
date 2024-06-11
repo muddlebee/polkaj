@@ -1,4 +1,5 @@
 package io.emeraldpay.polkaj.scaletypes.v14;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -7,6 +8,8 @@ import io.emeraldpay.polkaj.scale.ScaleReader;
 import io.emeraldpay.polkaj.scale.reader.EnumReader;
 import io.emeraldpay.polkaj.scale.reader.ListReader;
 import io.emeraldpay.polkaj.scale.reader.UnionReader;
+
+import java.util.List;
 
 public class MetadataReaderv14 implements ScaleReader<MetadataContainer> {
 
@@ -84,7 +87,6 @@ public class MetadataReaderv14 implements ScaleReader<MetadataContainer> {
         public MetadataContainer.TypeFields read(ScaleCodecReader rdr) {
             try {
 
-                //TODO: problem lies somewhere here
                 MetadataContainer.TypeFields result = new MetadataContainer.TypeFields();
                 logger.info("Reading TypeFields");
                 result.setId(rdr.readCompactInt());
@@ -112,7 +114,7 @@ public class MetadataReaderv14 implements ScaleReader<MetadataContainer> {
                 //rdr.readOptional(STRING_LIST_READER).ifPresent(result::setPath);
                 result.setPath(STRING_LIST_READER.read(rdr));
                 logger.info("Reading Type Params");
-              //  rdr.readOptional(PARAM_LIST_READER).ifPresent(result::setParams);
+                //  rdr.readOptional(PARAM_LIST_READER).ifPresent(result::setParams);
                 result.setParams(PARAM_LIST_READER.read(rdr));
                 //rdr.readOptional(PARAM_LIST_READER).ifPresent(result::setParams);
                 logger.info("Reading Type Def");
@@ -146,29 +148,45 @@ public class MetadataReaderv14 implements ScaleReader<MetadataContainer> {
                 MetadataContainer.Param result = new MetadataContainer.Param();
                 result.setName(rdr.readString());
                 rdr.readOptional(ScaleCodecReader.COMPACT_UINT).ifPresent(result::setType);
-               // result.setType(rdr.readCompactInt());
+                // result.setType(rdr.readCompactInt());
                 return result;
             }
         }
     }
 
-    static class PalletReader implements ScaleReader<MetadataContainer.Pallet> {
-        public static final ListReader<MetadataContainer.CallVariant> CALL_VARIANT_LIST_READER = new ListReader<>(new CallVariantReader());
+    public static class ListPalletReader implements ScaleReader<List<MetadataContainer.Pallet>> {
+        @Override
+        public List<MetadataContainer.Pallet> read(ScaleCodecReader rdr) {
+            try {
+                return new ListReader<>(new PalletReader()).read(rdr);
+            }catch (Exception e){
+                logger.error("Error reading ListPalletReader: " + e);
+                e.printStackTrace();
+                return null;
+            }
+        }
+    }
 
-        //TODO: PalletMetadataV14 Optional
+    public static class PalletReader implements ScaleReader<MetadataContainer.Pallet> {
+
         @Override
         public MetadataContainer.Pallet read(ScaleCodecReader rdr) {
-            MetadataContainer.Pallet result = new MetadataContainer.Pallet();
-            result.setName(rdr.readString());
-            result.setStorage(new StorageReader().read(rdr));
-            result.setCalls(new CallsReader().read(rdr));
-            result.setEvents(new EventReader().read(rdr));
-            result.setConstants(new ListReader<>(new ConstantReader()).read(rdr));
-            result.setErrors(new ErrorsReader().read(rdr));
-            result.setIndex(rdr.readUByte());
-            return result;
+            try {
+                MetadataContainer.Pallet result = new MetadataContainer.Pallet();
+                result.setName(rdr.readString());
+                rdr.readOptional(new StorageReader()).ifPresent(result::setStorage);
+                rdr.readOptional(new CallsReader()).ifPresent(result::setCalls);
+                rdr.readOptional(new EventReader()).ifPresent(result::setEvents);
+                result.setConstants(new ListReader<>(new ConstantReader()).read(rdr));
+                rdr.readOptional(new ErrorsReader()).ifPresent(result::setErrors);
+                result.setIndex(rdr.readUByte());
+                return result;
+            } catch (Exception e) {
+                System.out.println("Error reading PalletReader: " + e);
+                e.printStackTrace();
+                throw e; // rethrow the exception
+            }
         }
-
     }
 
     //ErrorReader
@@ -209,10 +227,15 @@ public class MetadataReaderv14 implements ScaleReader<MetadataContainer> {
 
         @Override
         public MetadataContainer.Storage read(ScaleCodecReader rdr) {
-            MetadataContainer.Storage result = new MetadataContainer.Storage();
-            result.setPrefix(rdr.readString());
-            result.setItems(ENTRY_LIST_READER.read(rdr));
-            return result;
+            try {
+                MetadataContainer.Storage result = new MetadataContainer.Storage();
+                result.setPrefix(rdr.readString());
+                result.setItems(ENTRY_LIST_READER.read(rdr));
+                return result;
+            } catch (Exception e) {
+                System.out.println("Error reading StorageReader: " + e);
+                throw e;
+            }
         }
 
     }
@@ -223,13 +246,18 @@ public class MetadataReaderv14 implements ScaleReader<MetadataContainer> {
 
         @Override
         public MetadataContainer.StorageItem read(ScaleCodecReader rdr) {
-            MetadataContainer.StorageItem result = new MetadataContainer.StorageItem();
-            result.setName(rdr.readString());
-            result.setModifier(MODIFIER_ENUM_READER.read(rdr));
-            result.setType(rdr.read(TYPE_READER));
-            result.setFallback(rdr.readByteArray());
-            result.setDocs(STRING_LIST_READER.read(rdr));
-            return result;
+            try {
+                MetadataContainer.StorageItem result = new MetadataContainer.StorageItem();
+                result.setName(rdr.readString());
+                result.setModifier(MODIFIER_ENUM_READER.read(rdr));
+                result.setType(rdr.read(TYPE_READER));
+                result.setFallback(rdr.readByteArray());
+                result.setDocs(STRING_LIST_READER.read(rdr));
+                return result;
+            } catch (Exception e) {
+                System.out.println("Error reading StorageItemReader: " + e);
+                throw e;
+            }
         }
     }
 
@@ -271,6 +299,7 @@ public class MetadataReaderv14 implements ScaleReader<MetadataContainer> {
             return result;
         }
     }
+
     // ExtrinsicReader
     static public class ExtrinsicReader implements ScaleReader<MetadataContainer.Extrinsic> {
         public static final ListReader<MetadataContainer.SignedExtension> SIGNED_EXTENSION_LIST_READER = new ListReader<>(new SignedExtension());
@@ -303,7 +332,7 @@ public class MetadataReaderv14 implements ScaleReader<MetadataContainer> {
                 result.setIdentifier(rdr.readString());
                 result.setType(rdr.readCompactInt());
                 result.setAdditionalSigned(rdr.readCompactInt());
-            }catch (Exception e){
+            } catch (Exception e) {
                 logger.error("Error reading MetadataContainer.SignedExtension: " + e);
                 return null; // or throw a custom exception
             }
@@ -325,7 +354,7 @@ public class MetadataReaderv14 implements ScaleReader<MetadataContainer> {
     static class TypePlainReader implements ScaleReader<MetadataContainer.PlainType> {
         @Override
         public MetadataContainer.PlainType read(ScaleCodecReader rdr) {
-            return new MetadataContainer.PlainType(rdr.readString());
+            return new MetadataContainer.PlainType(rdr.readCompactInt());
         }
     }
 
@@ -334,29 +363,14 @@ public class MetadataReaderv14 implements ScaleReader<MetadataContainer> {
         @Override
         public MetadataContainer.MapType read(ScaleCodecReader rdr) {
             MetadataContainer.MapDefinition definition = new MetadataContainer.MapDefinition();
-            definition.setHasher(HASHER_ENUM_READER.read(rdr));
-            definition.setKey(rdr.readString());
-            definition.setType(rdr.readString());
-            //    definition.setIterable(rdr.readBoolean());
+            ListReader<MetadataContainer.Hasher> HASHER_LIST_READER = new ListReader<>(HASHER_ENUM_READER);
+            definition.setHashers(HASHER_LIST_READER.read(rdr));
+            definition.setKey(rdr.readCompactInt());
+            definition.setValue(rdr.readCompactInt());
             return new MetadataContainer.MapType(definition);
         }
     }
 
-//    static class TypeDoubleMapReader implements ScaleReader<MetadataContainer.DoubleMapType> {
-//
-//        @Override
-//        public MetadataContainer.DoubleMapType read(ScaleCodecReader rdr) {
-//            MetadataContainer.DoubleMapDefinition definition = new MetadataContainer.DoubleMapDefinition();
-//            definition.setFirstHasher(HASHER_ENUM_READER.read(rdr));
-//            definition.setFirstKey(rdr.readString());
-//            definition.setSecondKey(rdr.readString());
-//            definition.setType(rdr.readString());
-//            definition.setSecondHasher(HASHER_ENUM_READER.read(rdr));
-//            return new MetadataContainer.DoubleMapType(definition);
-//        }
-//    }
-
-    //TODO: review
     static class DefTypeReader implements ScaleReader<MetadataContainer.CustomType<?>> {
 
         @SuppressWarnings("unchecked")

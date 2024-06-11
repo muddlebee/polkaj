@@ -19,11 +19,16 @@ public class ListReader<T> implements ScaleReader<List<T>> {
 
     @Override
     public List<T> read(ScaleCodecReader rdr) {
-        int size = rdr.readCompactInt();
-        List<T> result = new ArrayList<>(size);
-        for (int i = 0; i < size; i++) {
-            result.add(rdr.read(scaleReader));
+        try {
+            int size = rdr.readCompactInt();
+            List<T> result = new ArrayList<>(size);
+            for (int i = 0; i < size; i++) {
+                result.add(rdr.read(scaleReader));
+            }
+            return result;
+        } catch (Exception e) {
+            System.out.println("Exception in ListReader: " + e);
+            throw e;
         }
-        return result;
     }
 }
