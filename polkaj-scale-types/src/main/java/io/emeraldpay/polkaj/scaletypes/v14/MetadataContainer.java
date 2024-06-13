@@ -140,8 +140,6 @@ public class MetadataContainer {
         PLAIN(String.class),
         MAP(MapDefinition.class),
 
-        //   DOUBLEMAP(DoubleMapDefinition.class);
-
         COMPOSITE(Composite.class),
         VARIANT(Variant.class),
         ARRAY(Array.class),
@@ -167,10 +165,10 @@ public class MetadataContainer {
 
     //BitSequence
     @Data
-    public static class BitSequence{
+    public static class BitSequence {
         /**
-         *    readonly bitStoreType
-         *     readonly bitOrderType
+         * readonly bitStoreType
+         * readonly bitOrderType
          */
         private Integer bitStoreType;
         private Integer bitOrderType;
@@ -228,7 +226,7 @@ public class MetadataContainer {
         private Integer type;
     }
 
-    public  static class CompactType extends CustomType<Compact> {
+    public static class CompactType extends CustomType<Compact> {
         public CompactType(Compact value) {
             super(value);
         }
@@ -238,7 +236,6 @@ public class MetadataContainer {
             return TypeId.COMPACT;
         }
     }
-
 
     public static class PlainType extends CustomType<Integer> {
         public PlainType(Integer value) {
@@ -306,6 +303,7 @@ public class MetadataContainer {
         private Integer index;
         private List<String> docs;
     }
+
     public static class VariantType extends CustomType<Variant> {
         public VariantType(Variant value) {
             super(value);
@@ -335,17 +333,12 @@ public class MetadataContainer {
     }
 
 
-    // class for            "array": {
-    //              "len": 16,
-    //              "type": 2
-    //            }
     @Data
     public static class Array {
         private Long len;
         private Integer type;
     }
 
-    //extend CustomType for Array
     public static class ArrayType extends CustomType<Array> {
         public ArrayType(Array value) {
             super(value);
@@ -356,26 +349,6 @@ public class MetadataContainer {
             return TypeId.ARRAY;
         }
     }
-
-//    @Data
-//    public static class DoubleMapDefinition {
-//        private Hasher firstHasher;
-//        private String firstKey;
-//        private Hasher secondHasher;
-//        private String secondKey;
-//        private String type;
-//    }
-//
-//    public static class DoubleMapType extends CustomType<DoubleMapDefinition> {
-//        public DoubleMapType(DoubleMapDefinition value) {
-//            super(value);
-//        }
-//
-//        @Override
-//        public TypeId getId() {
-//            return TypeId.DOUBLEMAP;
-//        }
-//    }
 
     @Data
     public static class Calls {
