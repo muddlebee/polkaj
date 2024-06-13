@@ -56,7 +56,7 @@ public class MetadataReaderv14 implements ScaleReader<MetadataContainer> {
         }
     }
 
-    static public class LookupReader implements ScaleReader<MetadataContainer.Lookup> {
+    public static class LookupReader implements ScaleReader<MetadataContainer.Lookup> {
 
         // List Reader for TypeFields
         public static final ListReader<MetadataContainer.TypeFields> TYPE_FIELDS_LIST_READER = new ListReader<>(new TypeFieldsReader());
@@ -81,7 +81,7 @@ public class MetadataReaderv14 implements ScaleReader<MetadataContainer> {
         }
     }
 
-    public static class LookupTypesReader implements ScaleReader<MetadataContainer.Type> {
+    static class LookupTypesReader implements ScaleReader<MetadataContainer.Type> {
         private static final ListReader<String> STRING_LIST_READER = new ListReader<>(ScaleCodecReader.STRING);
         private static final ListReader<MetadataContainer.Param> PARAM_LIST_READER = new ListReader<>(new ParamReader());
         private static final DefReader DEF_READER = new DefReader();
@@ -144,7 +144,6 @@ public class MetadataReaderv14 implements ScaleReader<MetadataContainer> {
         }
     }
 
-    //ErrorReader
     static class ErrorsReader implements ScaleReader<MetadataContainer.Errors> {
         @Override
         public MetadataContainer.Errors read(ScaleCodecReader rdr) {
@@ -154,7 +153,6 @@ public class MetadataReaderv14 implements ScaleReader<MetadataContainer> {
         }
     }
 
-    //ConstantReader
     static class ConstantReader implements ScaleReader<MetadataContainer.Constant> {
         @Override
         public MetadataContainer.Constant read(ScaleCodecReader rdr) {
@@ -167,7 +165,6 @@ public class MetadataReaderv14 implements ScaleReader<MetadataContainer> {
         }
     }
 
-    //EventReader
     static class EventReader implements ScaleReader<MetadataContainer.Events> {
         @Override
         public MetadataContainer.Events read(ScaleCodecReader rdr) {
@@ -241,8 +238,7 @@ public class MetadataReaderv14 implements ScaleReader<MetadataContainer> {
         }
     }
 
-    // ExtrinsicReader
-    static public class ExtrinsicReader implements ScaleReader<MetadataContainer.Extrinsic> {
+    public static class ExtrinsicReader implements ScaleReader<MetadataContainer.Extrinsic> {
         public static final ListReader<MetadataContainer.SignedExtension> SIGNED_EXTENSION_LIST_READER = new ListReader<>(new SignedExtension());
 
         @Override
