@@ -7,7 +7,7 @@ import java.util.List;
 
 @Data
 public class MetadataContainer {
-    private Integer magicNumber;
+    private long magicNumber;
     private Integer version;
     private Metadata metadata;
 

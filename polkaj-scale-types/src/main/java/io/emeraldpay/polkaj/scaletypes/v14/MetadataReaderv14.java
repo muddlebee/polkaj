@@ -22,12 +22,16 @@ public class MetadataReaderv14 implements ScaleReader<MetadataContainer> {
 
     @Override
     public MetadataContainer read(ScaleCodecReader rdr) {
-
-        MetadataContainer result = new MetadataContainer();
-        result.setMagicNumber(INT32_READER.read(rdr));
-        result.setVersion(INT32_READER.read(rdr));
-        result.setMetadata(new MetadataScaleReader().read(rdr));
-        return result;
+        try {
+            MetadataContainer result = new MetadataContainer();
+            result.setMagicNumber(INT32_READER.read(rdr));
+            result.setVersion(rdr.readUByte());
+            result.setMetadata(new MetadataScaleReader().read(rdr));
+            return result;
+        } catch (Exception e) {
+            System.out.println("Error reading metadata: " + e);
+            return null;
+        }
     }
 
 //    //class MetadataV14
@@ -51,7 +55,7 @@ public class MetadataReaderv14 implements ScaleReader<MetadataContainer> {
             v14.setLookup(new LookupReader().read(rdr));         // Using the LookupReader
             v14.setPallets(MODULE_LIST_READER.read(rdr));       // Assuming pallets remain a list
             v14.setExtrinsic(new ExtrinsicReader().read(rdr));  // Using the ExtrinsicReader
-            v14.setType(INT32_READER.read(rdr));
+            v14.setType(rdr.readCompactInt());
             return v14;
         }
     }
@@ -64,7 +68,6 @@ public class MetadataReaderv14 implements ScaleReader<MetadataContainer> {
         @Override
         public MetadataContainer.Lookup read(ScaleCodecReader rdr) {
                 MetadataContainer.Lookup result = new MetadataContainer.Lookup();
-                logger.info("Reading Lookup");
                 result.setTypes(TYPE_FIELDS_LIST_READER.read(rdr));
                 return result;
         }

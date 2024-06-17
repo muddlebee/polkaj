@@ -3,7 +3,6 @@ package io.emeraldpay.polkaj.scale;
 import io.emeraldpay.polkaj.scale.reader.*;
 
 import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Optional;
 import org.slf4j.Logger;
@@ -75,8 +74,8 @@ public class ScaleCodecReader {
         if (!hasNext()) {
             throw new IndexOutOfBoundsException("Cannot read " + pos + " of " + source.length);
         }
-        logger.info("pos: {}", pos);
-        logger.info("source[pos]: {}", source[pos]);
+//        logger.info("pos: {}", pos);
+//        logger.info("source[pos]: {}", source[pos]);
         return source[pos++];
     }
 
@@ -150,7 +149,6 @@ public class ScaleCodecReader {
         }
     }
 
-    //TODO: handle byte arrays and big integers
     public byte[] readUint256() {
         return readByteArray(32);
     }
@@ -177,18 +175,18 @@ public class ScaleCodecReader {
 //    }
 
     public byte[] readByteArray(int len) {
-        logger.info("len: {}", len);
-        logger.info("pos: {}", pos);
-        logger.info("source.length: {}", source.length);
+        System.out.println("len: {}" + len);
+        System.out.println("pos: {}"+ pos);
+        System.out.println("source.length: {}" + source.length);
         if (pos + len > source.length) {
             throw new IllegalArgumentException("Not enough data to read " + len + " bytes");
         }
         byte[] result = new byte[len];
         System.arraycopy(source, pos, result, 0, result.length);
         pos += len;
-        logger.info("");
-        logger.info("result : {}", Arrays.toString(result));
-        logger.info("");
+        System.out.println("");
+        System.out.println("result : {}"+ Arrays.toString(result));
+        System.out.println("");
         return result;
     }
 

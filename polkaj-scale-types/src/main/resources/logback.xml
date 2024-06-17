@@ -21,9 +21,4 @@
         <appender-ref ref="FILE" />
     </root>
 
-    <!-- Root Logger -->
-    <root level="ERROR">
-        <appender-ref ref="CONSOLE" />
-        <appender-ref ref="FILE" />
-    </root>
 </configuration>
