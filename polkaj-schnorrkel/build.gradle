@@ -20,17 +20,50 @@ task compileRust(type:Exec) {
 
 compileJava.dependsOn(compileRust)
 
-jar {
+//jar {
+//    from("${buildDir}/rust/release") {
+//        into "native/macos"
+//        include '*.dylib'
+//    }
+//    from("${buildDir}/rust/release") {
+//        into "native/linux"
+//        include '*.so'
+//    }
+//    from("${buildDir}/rust/release") {
+//        into "native/windows"
+//        include '*.dll'
+//    }
+//}
+
+
+// Copy native libraries to resources
+task copyNativeLibs(type: Copy) {
     from("${buildDir}/rust/release") {
-        into "native/macos"
+        include '*.dll'
+        include '*.so'
         include '*.dylib'
     }
-    from("${buildDir}/rust/release") {
-        into "native/linux"
-        include '*.so'
-    }
-    from("${buildDir}/rust/release") {
-        into "native/windows"
-        include '*.dll'
-    }
+    into "${buildDir}/resources/main/native"
+}
+
+processResources.dependsOn(copyNativeLibs)
+
+jar {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+// Set java.library.path for all JavaExec tasks (including test)
+tasks.withType(JavaExec) {
+    systemProperty "java.library.path", file("${buildDir}/resources/main/native").absolutePath
+}
+
+// If you need a specific run task, you can define it like this:
+task run(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'your.main.ClassName' // Replace with your actual main class
+    systemProperty "java.library.path", file("${buildDir}/resources/main/native").absolutePath
+}
+
+test {
+    systemProperty "java.library.path", file("${buildDir}/resources/main/native").absolutePath
 }

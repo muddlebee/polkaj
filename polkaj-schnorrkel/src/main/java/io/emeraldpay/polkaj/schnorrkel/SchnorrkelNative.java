@@ -39,10 +39,14 @@ public class SchnorrkelNative extends Schnorrkel {
         }
     }
 
+    //TODO:address can be refactored to use the generateSeed method
     @Override
     public KeyPair generateKeyPair(SecureRandom random) throws SchnorrkelException {
         byte[] seed = new byte[32];
         random.nextBytes(seed);
+        String mnemonic = MnemonicUtils.generateMnemonic(seed);
+        //print mnemonic
+        System.out.println("mnemonic: " + mnemonic);
         byte[] key = keypairFromSeed(seed);
         return decodeKeyPair(key);
     }
@@ -69,6 +73,11 @@ public class SchnorrkelNative extends Schnorrkel {
     public PublicKey derivePublicKeySoft(PublicKey base, ChainCode chainCode) throws SchnorrkelException {
         byte[] key = derivePublicKeySoft(base.getPublicKey(), chainCode.getValue());
         return new Schnorrkel.PublicKey(key);
+    }
+
+    //implementat BIP39 methods
+    public static String generateSeed(int words) {
+        return BIP39.generate(words);
     }
 
     private static Schnorrkel.KeyPair decodeKeyPair(byte[] key) throws SchnorrkelException {
@@ -121,19 +130,22 @@ public class SchnorrkelNative extends Schnorrkel {
 
     private static boolean extractAndLoadJNI() throws IOException {
         // define which of files bundled with Jar to extract
-        String os = System.getProperty("os.name", "unknown").toLowerCase();
-        if (os.contains("win")) {
-            os = "windows";
-        } else if (os.contains("mac")) {
-            os = "macos";
-        } else if (os.contains("nux")) {
-            os = "linux";
-        } else {
-            System.err.println("Unknown OS: " + os + ". Unable to setup native library for Polkaj Schnorrkel");
-            return false;
-        }
+//        String os = System.getProperty("os.name", "unknown").toLowerCase();
+//        if (os.contains("win")) {
+//            os = "windows";
+//        } else if (os.contains("mac")) {
+//            os = "macos";
+//        } else if (os.contains("nux")) {
+//            os = "linux";
+//        } else {
+//            System.err.println("Unknown OS: " + os + ". Unable to setup native library for Polkaj Schnorrkel");
+//            return false;
+//        }
+//        String filename = System.mapLibraryName(LIBNAME);
+//        String classpathFile = "/native/" + os + "/" + filename;
+
         String filename = System.mapLibraryName(LIBNAME);
-        String classpathFile = "/native/" + os + "/" + filename;
+        String classpathFile = "/native/" + filename;
 
         // extract native lib to the filesystem
         InputStream lib = Schnorrkel.class.getResourceAsStream(classpathFile);
@@ -156,21 +168,26 @@ public class SchnorrkelNative extends Schnorrkel {
     }
 
 
-    //generate seed
-    public static byte[] generateSeed()  {
-        final SecureRandom secureRandom = new SecureRandom();
-        byte[] initialEntropy = new byte[16];
-        secureRandom.nextBytes(initialEntropy);
-        String mnemonic = MnemonicUtils.generateMnemonic(initialEntropy);
-        //print mnemonic
-        System.out.println("mnemonic: " + mnemonic);
-        byte[] seed = MnemonicUtils.generateSeed(mnemonic, "");
-        return seed;
-    }
+//    //generate seed
+//    public static byte[] generateSeed()  {
+//        final SecureRandom secureRandom = new SecureRandom();
+//        byte[] initialEntropy = new byte[16];
+//        secureRandom.nextBytes(initialEntropy);
+//        String mnemonic = MnemonicUtils.generateMnemonic(initialEntropy);
+//        //print mnemonic
+//        System.out.println("mnemonic: " + mnemonic);
+//        byte[] seed = MnemonicUtils.generateSeed(mnemonic, "");
+//        return initialEntropy;
+//    }
 
     //psvm
-    public static void main(String[] args) {
-       generateSeed();
+    public static void main(String[] args) throws SchnorrkelException {
+//        byte[] seed = generateSeed();
+//        Schnorrkel.KeyPair keyPair = Schnorrkel.getInstance().generateKeyPairFromSeed(seed);
+//        System.out.println("Public Key: " + keyPair.getPublicKey());
+//        System.out.println("Secret Key: " + keyPair.getSecretKey());
+        System.out.println("BIP39.generate(12) = " + BIP39.generate(18));
+
     }
 
 }

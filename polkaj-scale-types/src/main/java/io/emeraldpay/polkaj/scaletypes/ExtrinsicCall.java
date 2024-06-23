@@ -44,8 +44,13 @@ public abstract class ExtrinsicCall {
      * @param call Call details on current Runtime
      */
     public void init(Metadata.Call call) {
-        setModuleIndex(call.getIndex() >> 8);
-        setCallIndex(call.getIndex() & 0xff);
+
+        // transfer_allow_death module 4
+        //call 0
+        setModuleIndex(4);
+        setCallIndex(0);
+//        setModuleIndex(call.getIndex() >> 8);
+//        setCallIndex(call.getIndex() & 0xff);
     }
 
     public int getModuleIndex() {

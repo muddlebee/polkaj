@@ -1,5 +1,12 @@
 package io.emeraldpay.polkaj.ss58;
 
+/**
+ * The basic format of the address can be described as:
+ *
+ * base58encode ( concat ( <address-type>, <address>, <checksum> ) )
+ * <a href="https://docs.substrate.io/reference/address-formats/#address-type"/>
+ *
+ */
 public class SS58 {
 
     private final SS58Type type;

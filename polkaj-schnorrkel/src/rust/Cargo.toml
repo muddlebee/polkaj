@@ -10,3 +10,8 @@ jni = "0.17.0"
 schnorrkel = "0.9.1"
 hex = "0.4.2"
 rand = "0.7.3"
+tiny-bip39 = { version = "0.7", default-features = false }
+hmac = "0.7.0"
+pbkdf2 = { version = "0.3.0", default-features = false }
+sha2 = "0.8.1"
+

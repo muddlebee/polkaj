@@ -22,6 +22,9 @@ public abstract class SS58Type {
         return value;
     }
 
+    /**
+     *  How the Network byte is used: <a href="https://wiki.polkadot.network/docs/learn-account-advanced#for-the-curious-how-prefixes-work"/>
+     */
     public static class Network extends SS58Type {
 
         public static Network LIVE = new Network(0b00000000);
