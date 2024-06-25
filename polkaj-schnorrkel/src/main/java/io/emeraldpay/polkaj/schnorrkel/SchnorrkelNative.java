@@ -1,13 +1,12 @@
 package io.emeraldpay.polkaj.schnorrkel;
 
-import org.web3j.crypto.MnemonicUtils;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.Arrays;
 
 /**
  * Wrapper around Rust implementation of the algorithms.
@@ -44,9 +43,6 @@ public class SchnorrkelNative extends Schnorrkel {
     public KeyPair generateKeyPair(SecureRandom random) throws SchnorrkelException {
         byte[] seed = new byte[32];
         random.nextBytes(seed);
-        String mnemonic = MnemonicUtils.generateMnemonic(seed);
-        //print mnemonic
-        System.out.println("mnemonic: " + mnemonic);
         byte[] key = keypairFromSeed(seed);
         return decodeKeyPair(key);
     }
@@ -75,9 +71,41 @@ public class SchnorrkelNative extends Schnorrkel {
         return new Schnorrkel.PublicKey(key);
     }
 
+    //generate keypair from seed using BIP39
+    public static KeyPair generateKeyPair(String phrase) throws SchnorrkelException {
+        byte[] seed = generateSeedFromPassword(phrase);
+        return Schnorrkel.getInstance().generateKeyPairFromSeed(seed);
+    }
+
     //implementat BIP39 methods
-    public static String generateSeed(int words) {
+    public static String generate(int words) {
         return BIP39.generate(words);
+    }
+
+    //generate seed with input as password
+    public static byte[] generateSeedFromPassword(String password) {
+        String phrase = BIP39.generate(12);
+        return BIP39.toSeed(phrase, password);
+    }
+
+    //BIP39 validate
+    public static boolean validate(String phrase) {
+        return BIP39.validate(phrase);
+    }
+
+    //BIP39 toEntropy
+    public static byte[] toEntropy(String phrase) {
+        return BIP39.toEntropy(phrase);
+    }
+
+    //BIP39 toMiniSecret
+    public static byte[] toMiniSecret(String phrase, String password) {
+        return BIP39.toMiniSecret(phrase, password);
+    }
+
+    //BIP39 toSeed
+    public static byte[] toSeed(String phrase, String password) {
+        return BIP39.toSeed(phrase, password);
     }
 
     private static Schnorrkel.KeyPair decodeKeyPair(byte[] key) throws SchnorrkelException {
@@ -130,6 +158,7 @@ public class SchnorrkelNative extends Schnorrkel {
 
     private static boolean extractAndLoadJNI() throws IOException {
         // define which of files bundled with Jar to extract
+        //TODO:OS detect
 //        String os = System.getProperty("os.name", "unknown").toLowerCase();
 //        if (os.contains("win")) {
 //            os = "windows";
@@ -143,7 +172,6 @@ public class SchnorrkelNative extends Schnorrkel {
 //        }
 //        String filename = System.mapLibraryName(LIBNAME);
 //        String classpathFile = "/native/" + os + "/" + filename;
-
         String filename = System.mapLibraryName(LIBNAME);
         String classpathFile = "/native/" + filename;
 
@@ -167,19 +195,6 @@ public class SchnorrkelNative extends Schnorrkel {
         return true;
     }
 
-
-//    //generate seed
-//    public static byte[] generateSeed()  {
-//        final SecureRandom secureRandom = new SecureRandom();
-//        byte[] initialEntropy = new byte[16];
-//        secureRandom.nextBytes(initialEntropy);
-//        String mnemonic = MnemonicUtils.generateMnemonic(initialEntropy);
-//        //print mnemonic
-//        System.out.println("mnemonic: " + mnemonic);
-//        byte[] seed = MnemonicUtils.generateSeed(mnemonic, "");
-//        return initialEntropy;
-//    }
-
     //psvm
     public static void main(String[] args) throws SchnorrkelException {
 //        byte[] seed = generateSeed();
@@ -187,7 +202,11 @@ public class SchnorrkelNative extends Schnorrkel {
 //        System.out.println("Public Key: " + keyPair.getPublicKey());
 //        System.out.println("Secret Key: " + keyPair.getSecretKey());
         System.out.println("BIP39.generate(12) = " + BIP39.generate(18));
-
+        String phrase = BIP39.generate(12);
+        byte[] seed = BIP39.toSeed(phrase, "");
+        Schnorrkel.KeyPair keyPair = Schnorrkel.getInstance().generateKeyPairFromSeed(seed);
+        System.out.println("Public Key: " + Arrays.toString(keyPair.getPublicKey()));
+        System.out.println("Secret Key: " + Arrays.toString(keyPair.getSecretKey()));
     }
 
 }

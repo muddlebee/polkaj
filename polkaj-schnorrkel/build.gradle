@@ -4,10 +4,10 @@ repositories {
     mavenCentral() // or jcenter(), or maven { url 'https://custom-repo.com' }
 }
 
-dependencies {
-    implementation 'org.web3j:crypto:4.9.1'
-
-}
+//dependencies {
+//    implementation 'org.web3j:crypto:4.9.1'
+//
+//}
 
 test {
     systemProperty "java.library.path", file("${buildDir}/rust/release").absolutePath

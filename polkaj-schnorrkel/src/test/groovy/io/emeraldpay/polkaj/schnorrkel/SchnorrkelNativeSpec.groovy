@@ -170,4 +170,16 @@ class SchnorrkelNativeSpec extends Specification {
         then:
         Hex.encodeHexString(act.getPublicKey()) == "40b9675df90efa6069ff623b0fdfcf706cd47ca7452a5056c7ad58194d23440a"
     }
+
+    def "generate should return a mnemonic phrase of the correct length"() {
+        given:
+        schnorrkel.generate(12) >> "word1 word2 word3 word4 word5 word6 word7 word8 word9 word10 word11 word12"
+
+        when:
+        def result = schnorrkel.generate(12)
+
+        then:
+        result.split(" ").length == 12
+    }
+
 }
