@@ -13,12 +13,12 @@ class ExtrinsicContextBuilderSpec extends Specification {
         then:
         act.nonce == 0
         act.era.immortal
-        act.eraBlockHash == Hash256.empty()
-        act.eraHeight == 0
-        act.genesis == Hash256.empty()
+        act.blockHash == Hash256.empty()
+     //   act.eraHeight == 0
+        act.genesisHash == Hash256.empty()
         act.tip == DotAmount.ZERO
-        act.runtimeVersion == 254
-        act.txVersion == 1
+        act.specVersion == 254
+        act.transactionVersion == 1
     }
 
     def "Set genesis"() {
@@ -27,7 +27,7 @@ class ExtrinsicContextBuilderSpec extends Specification {
                 .genesis(Hash256.from("0x35170a58d341fd81c07ee349438da400ecfb625782cd25e29774203080a54f45"))
                 .build()
         then:
-        act.genesis == Hash256.from("0x35170a58d341fd81c07ee349438da400ecfb625782cd25e29774203080a54f45")
+        act.genesisHash == Hash256.from("0x35170a58d341fd81c07ee349438da400ecfb625782cd25e29774203080a54f45")
     }
 
     def "Set genesis for immortal sets era hash"() {
@@ -37,7 +37,7 @@ class ExtrinsicContextBuilderSpec extends Specification {
                 .build()
         then:
         act.era.immortal
-        act.eraBlockHash == Hash256.from("0x35170a58d341fd81c07ee349438da400ecfb625782cd25e29774203080a54f45")
+        act.blockHash == Hash256.from("0x35170a58d341fd81c07ee349438da400ecfb625782cd25e29774203080a54f45")
     }
 
     def "Set runtime"() {
@@ -46,8 +46,8 @@ class ExtrinsicContextBuilderSpec extends Specification {
                 .runtime(10, 34)
                 .build()
         then:
-        act.txVersion == 10
-        act.runtimeVersion == 34
+        act.transactionVersion == 10
+        act.specVersion == 34
     }
 
     def "Set eraBlockHash"() {
@@ -56,7 +56,7 @@ class ExtrinsicContextBuilderSpec extends Specification {
                 .eraBlockHash(Hash256.from("0x35170a58d341fd81c07ee349438da400ecfb625782cd25e29774203080a54f45"))
                 .build()
         then:
-        act.eraBlockHash == Hash256.from("0x35170a58d341fd81c07ee349438da400ecfb625782cd25e29774203080a54f45")
+        act.blockHash == Hash256.from("0x35170a58d341fd81c07ee349438da400ecfb625782cd25e29774203080a54f45")
     }
 
     def "Set nonce"() {

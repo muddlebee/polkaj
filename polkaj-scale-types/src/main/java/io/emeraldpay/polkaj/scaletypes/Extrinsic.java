@@ -24,6 +24,7 @@ public class Extrinsic<CALL extends ExtrinsicCall> {
     public static final int TYPE_UNMASK_VERSION = 0b01111111;
 
     private TransactionInfo tx;
+    //TODO: add args and call index
     private CALL call;
 
     public TransactionInfo getTx() {
@@ -86,25 +87,12 @@ public class Extrinsic<CALL extends ExtrinsicCall> {
      * Main details about Extrinsic
      */
     public static class TransactionInfo {
-        /**
-         * Sender
-         */
+
         private UnionValue<MultiAddress> sender;
-        /**
-         * Signature
-         */
+        //TODO:TransactionInfo MultiSignature
         private Signature signature;
-        /**
-         * Era to execute extrinsic. Immortal by default (i.e. 0)
-         */
         private Integer era = 0;
-        /**
-         * Sender nonce
-         */
         private Long nonce;
-        /**
-         * Tip to validator. Zero by default.
-         */
         private DotAmount tip = DotAmount.ZERO;
 
         public UnionValue<MultiAddress> getSender() {

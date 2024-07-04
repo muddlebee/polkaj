@@ -141,6 +141,15 @@ public abstract class Schnorrkel {
      */
     public abstract Schnorrkel.PublicKey derivePublicKeySoft(Schnorrkel.PublicKey base, Schnorrkel.ChainCode chainCode) throws SchnorrkelException;
 
+    /**
+     * Generate a new Key Pair from a password
+     *
+     * @param password
+     * @return
+     * @throws SchnorrkelException
+     */
+    public abstract Schnorrkel.KeyPair generateKeyPair(String seedPhrase, String password) throws SchnorrkelException;
+
     // ====================== Supporting Classes ======================
 
     /**

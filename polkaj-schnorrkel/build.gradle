@@ -67,3 +67,49 @@ task run(type: JavaExec) {
 test {
     systemProperty "java.library.path", file("${buildDir}/resources/main/native").absolutePath
 }
+
+// TODO: multi OS build support
+//
+// def nativeLibsDir = "${buildDir}/libs/native"
+//
+//task compileRustWindows(type: Exec) {
+//    commandLine 'cargo', 'build', '--release', '--target', 'x86_64-pc-windows-msvc'
+//    workingDir 'src/rust'
+//}
+//
+//task compileRustLinux(type: Exec) {
+//    commandLine 'cargo', 'build', '--release', '--target', 'x86_64-unknown-linux-gnu'
+//    workingDir 'src/rust'
+//}
+//
+//task compileRustMacOS(type: Exec) {
+//    commandLine 'cargo', 'build', '--release', '--target', 'x86_64-apple-darwin'
+//    workingDir 'src/rust'
+//}
+//
+//task compileRustAll {
+//    dependsOn compileRustWindows, compileRustLinux, compileRustMacOS
+//}
+//
+//task copyNativeLibs(type: Copy) {
+//    from("${project.rootDir}/src/rust/target/x86_64-pc-windows-msvc/release") {
+//        include 'polkaj_schnorrkel.dll'
+//    }
+//    from("${project.rootDir}/src/rust/target/x86_64-unknown-linux-gnu/release") {
+//        include 'libpolkaj_schnorrkel.so'
+//    }
+//    from("${project.rootDir}/src/rust/target/x86_64-apple-darwin/release") {
+//        include 'libpolkaj_schnorrkel.dylib'
+//    }
+//    into nativeLibsDir
+//}
+//
+//jar {
+//    from(nativeLibsDir) {
+//        into 'native'
+//    }
+//}
+//
+//compileJava.dependsOn compileRustAll
+//copyNativeLibs.dependsOn compileRustAll
+//processResources.dependsOn copyNativeLibs

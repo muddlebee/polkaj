@@ -39,10 +39,10 @@ class ExtrinsicContextAutoBuilderSpec extends Specification {
         when:
         def act = builder.fetch(api).get().build()
         then:
-        act.genesis == Hash256.from("0x4c0bdd177c17ca145ad9a3e76d092d4d4baa8add4fa8c78cc2fbbf8e3cbd5122")
+        act.genesisHash == Hash256.from("0x4c0bdd177c17ca145ad9a3e76d092d4d4baa8add4fa8c78cc2fbbf8e3cbd5122")
         act.nonce == 1
-        act.runtimeVersion == 202
-        act.txVersion == 101
+        act.specVersion == 202
+        act.transactionVersion == 101
         act.era == Era.IMMORTAL
     }
 }

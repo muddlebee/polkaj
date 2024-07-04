@@ -72,8 +72,14 @@ public class SchnorrkelNative extends Schnorrkel {
     }
 
     //generate keypair from seed using BIP39
-    public static KeyPair generateKeyPair(String phrase) throws SchnorrkelException {
-        byte[] seed = generateSeedFromPassword(phrase);
+    public KeyPair generateKeyPair(String password) throws SchnorrkelException {
+        byte[] seed = generateSeedFromPassword(password);
+        return Schnorrkel.getInstance().generateKeyPairFromSeed(seed);
+    }
+
+    @Override
+    public KeyPair generateKeyPair(String seedPhrase, String password) throws SchnorrkelException {
+        byte[] seed = BIP39.toSeed(seedPhrase, password);
         return Schnorrkel.getInstance().generateKeyPairFromSeed(seed);
     }
 

@@ -12,6 +12,16 @@ public class RuntimeVersionJson {
     private String specName;
     private Integer specVersion;
     private Integer transactionVersion;
+    private String stateVersion; // or whatever the correct type is
+
+    public String getStateVersion() {
+        return stateVersion;
+    }
+
+    public void setStateVersion(String stateVersion) {
+        this.stateVersion = stateVersion;
+    }
+
 
     public List<List<?>> getApis() {
         return apis;

@@ -37,6 +37,8 @@ public abstract class SS58Type {
         public static Network DOTHEREUM = new Network(0b00010100);
         public static Network SUBSTRATE = new Network(0b00101010);
         public static Network SUBSTRATE_SECONDARY = new Network(0b00101011);
+        //Westend network with prefix 42
+        public static Network WESTEND = new Network(0b00101010);
 
         private static Network[] ALL = {
                 LIVE, LIVE_SECONDARY,
@@ -44,7 +46,8 @@ public abstract class SS58Type {
                 EDGEWARE_BERLIN,
                 KULUPU, KULUPU_SECONDARY,
                 DOTHEREUM,
-                SUBSTRATE, SUBSTRATE_SECONDARY
+                SUBSTRATE, SUBSTRATE_SECONDARY,
+                WESTEND
         };
 
         private Network(int value) {

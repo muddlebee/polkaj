@@ -180,6 +180,7 @@ public class ExtrinsicSigner<CALL extends ExtrinsicCall> {
             return callBuffer.toByteArray();
         }
 
+        //TODO:ext
         @Override
         public void write(ScaleCodecWriter wrt, SignaturePayload<CALL> signPayload) throws IOException {
             ExtrinsicContext context = signPayload.getContext();
@@ -191,13 +192,13 @@ public class ExtrinsicSigner<CALL extends ExtrinsicCall> {
             wrt.write(ERA_WRITER, context.getEra().toInteger());
             wrt.write(ScaleCodecWriter.COMPACT_BIGINT, BigInteger.valueOf(context.getNonce()));
             wrt.write(ScaleCodecWriter.COMPACT_BIGINT, context.getTip().getValue());
-            wrt.writeUint32(context.getRuntimeVersion());
-            wrt.writeUint32(context.getTxVersion());
-            wrt.writeUint256(context.getGenesis().getBytes());
+            wrt.writeUint32(context.getSpecVersion());
+            wrt.writeUint32(context.getTransactionVersion());
+            wrt.writeUint256(context.getGenesisHash().getBytes());
             if (context.getEra().isImmortal()) {
-                wrt.writeUint256(context.getGenesis().getBytes());
+                wrt.writeUint256(context.getGenesisHash().getBytes());
             } else {
-                wrt.writeUint256(context.getEraBlockHash().getBytes());
+                wrt.writeUint256(context.getBlockHash().getBytes());
             }
         }
     }
