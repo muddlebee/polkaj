@@ -192,6 +192,8 @@ public class ExtrinsicSigner<CALL extends ExtrinsicCall> {
             wrt.write(ERA_WRITER, context.getEra().toInteger());
             wrt.write(ScaleCodecWriter.COMPACT_BIGINT, BigInteger.valueOf(context.getNonce()));
             wrt.write(ScaleCodecWriter.COMPACT_BIGINT, context.getTip().getValue());
+            wrt.writeOptional(ScaleCodecWriter.UINT32, context.getAssetId());
+            wrt.writeOptional(ScaleCodecWriter.UINT32, context.getMode());
             wrt.writeUint32(context.getSpecVersion());
             wrt.writeUint32(context.getTransactionVersion());
             wrt.writeUint256(context.getGenesisHash().getBytes());
@@ -200,6 +202,9 @@ public class ExtrinsicSigner<CALL extends ExtrinsicCall> {
             } else {
                 wrt.writeUint256(context.getBlockHash().getBytes());
             }
+            wrt.writeUint256(context.getMetadataHash().getBytes());
+            //TODO: check if required
+            wrt.write(ScaleCodecWriter.BOOL, context.isWithSignedTransaction());
         }
     }
 }

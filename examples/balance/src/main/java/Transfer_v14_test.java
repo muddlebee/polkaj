@@ -167,12 +167,15 @@ public class Transfer_v14_test {
                 // prepare call, and sign with sender Secret Key within the context
                 Metadata metadata = new Metadata();
                 AccountRequests.Transfer transfer = AccountRequests.transfer()
-                        .runtime(metadata) //TODO: hardcode call index and init
+                      //  .runtime(metadata) //TODO: hardcode call index and init
+                        .module(5,3)
                         .from(alice)
                         .to(bob)
                         .amount(amount)
                         .sign(aliceKey, context)
                         .build(); //TODO:2   Encoded call data (from step 2) for args, refer below
+
+
                 /**
                  * [
                  *   Pallet Index (Balances pallet)

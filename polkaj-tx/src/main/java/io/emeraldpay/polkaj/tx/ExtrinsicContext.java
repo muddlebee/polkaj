@@ -21,14 +21,18 @@ public class ExtrinsicContext {
     private Era era = Era.IMMORTAL;
     private Hash256 genesisHash;
 
-    //TODO: java compatible
     // method: AnyU8a | IMethod<AnyTuple>;
+    private Hash256 method;
     private long nonce = 0;
     private int specVersion;
     private DotAmount tip = DotAmount.ZERO;
-    private int transactionVersion;
-    private long assetId;
 
+    //new extrinsic fields
+    private int transactionVersion;
+    private int assetId;
+    private int mode;
+    private Hash256 metadataHash;
+    private boolean withSignedTransaction;
 
     /**
      * Start new builder for the context
@@ -60,7 +64,11 @@ public class ExtrinsicContext {
         private long nonce = 0;
         private Era era = Era.IMMORTAL;
         private DotAmount tip = DotAmount.ZERO;
-        //     private long eraHeight = 0;
+        private long assetId;
+        private long mode;
+        private Hash256 metadataHash = Hash256.empty();
+        private boolean withSignedTransaction = false;
+
 
         public Builder runtime(RuntimeVersionJson version) {
             return runtime(version.getTransactionVersion(), version.getSpecVersion());
@@ -109,6 +117,9 @@ public class ExtrinsicContext {
             context.setNonce(nonce);
             context.setEra(era);
             context.setTip(tip);
+
+            //TODO: add additional fields of ExtrinsicContext
+
             return context;
         }
     }
