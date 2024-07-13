@@ -18,6 +18,8 @@ public class ScaleCodecWriter implements Closeable {
     public static final ULong32Writer ULONG32 = new ULong32Writer();
     public static final BoolWriter BOOL = new BoolWriter();
     public static final BoolOptionalWriter BOOL_OPT = new BoolOptionalWriter();
+    public static final UByteWriter UBYTE = new UByteWriter();
+    public static final Uint256ByteWriter UINT256 = new Uint256ByteWriter();
 
     private final OutputStream out;
 

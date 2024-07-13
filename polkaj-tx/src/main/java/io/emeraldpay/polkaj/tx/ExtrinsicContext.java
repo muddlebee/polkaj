@@ -32,7 +32,6 @@ public class ExtrinsicContext {
     private int assetId;
     private int mode;
     private Hash256 metadataHash;
-    private boolean withSignedTransaction;
 
     /**
      * Start new builder for the context
@@ -67,7 +66,6 @@ public class ExtrinsicContext {
         private long assetId;
         private long mode;
         private Hash256 metadataHash = Hash256.empty();
-        private boolean withSignedTransaction = false;
 
 
         public Builder runtime(RuntimeVersionJson version) {
