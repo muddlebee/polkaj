@@ -82,7 +82,6 @@ public class AccountRequests {
         }
     }
 
-    //TODO: separate StorageRequest logic
     public static class AddressBalance extends StorageRequest<AccountInfo> {
 
         private final Address address;
@@ -91,7 +90,6 @@ public class AccountRequests {
             this.address = address;
         }
 
-        //TODO: send encoded request
         @Override
         public ByteData encodeRequest() {
             String key1 = "System";
@@ -105,7 +103,6 @@ public class AccountRequests {
             return new ByteData(buffer.flip().array());
         }
 
-        //TODO: receive and decode request
         @Override
         public AccountInfo apply(ByteData result) {
             if (result == null) {
@@ -115,7 +112,6 @@ public class AccountRequests {
         }
     }
 
-    //TODO: separate ExtrinsicRequest logic
     public static class Transfer implements ExtrinsicRequest {
         private static final ExtrinsicWriter<BalanceTransfer> CODEC = new ExtrinsicWriter<>(
                 new BalanceTransferWriter()
@@ -148,7 +144,6 @@ public class AccountRequests {
     }
 
 
-    //TODO: TransferBuilder and generic builder logic
     public static class TransferBuilder {
         private Address from;
         private Extrinsic.Signature signature;

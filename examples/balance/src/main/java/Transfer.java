@@ -115,8 +115,8 @@ public class Transfer {
             // get current balance to show, optional
             AccountInfo aliceAccount = aliceAccountRequest.execute(client).get();
 
-            System.out.println("Using genesis : " + context.getGenesis());
-            System.out.println("Using runtime : " + context.getTxVersion() + ", " + context.getRuntimeVersion());
+            System.out.println("Using genesis : " + context.getGenesisHash());
+            System.out.println("Using runtime : " + context.getTransactionVersion() + ", " + context.getSpecVersion());
             System.out.println("Using nonce   : " + context.getNonce());
             System.out.println("------");
             System.out.println("Currently available: " + AMOUNT_FORMAT.format(aliceAccount.getData().getFree()));

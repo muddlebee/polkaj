@@ -64,9 +64,12 @@ public class Transfer_v14_test {
 
             Address alice = new Address(SS58Type.Network.WESTEND, aliceKey.getPublicKey());
             System.out.println("TEST_ADDRESS : " + alice.toString());
-            assert alice.toString().equals("5EL526Sqyn8o7gwew5nQoftRUiJXYZr22GG7GJ9XMLKZFdco");
+            assert alice.toString().equals("5GEwX4bq8uzehVgdTKfmPrXPU61XoUdqfCZmWxs1tajKz9K8");
 
             Address bob = Address.from("5GW83GQ53B3UGAMCyoFeFTJV8GKwU6bDjF3iRksdxtSt8QNU");
+            // print address details
+            System.out.println("Bob Address Network : " + bob.getNetwork());
+
 
   /*      Schnorrkel schnorrkel = Schnorrkel.getInstance();
         String seedPhrase = "scrub thought hamster laptop frog raise begin slide squeeze path famous dinner";
@@ -153,7 +156,7 @@ public class Transfer_v14_test {
                 // get current balance to show, optional
                 AccountInfo aliceAccount = aliceAccountRequest.execute(client).get();
                 BigInteger value = new BigInteger(String.valueOf(100000000));
-                DotAmount amount =  DotAmount.from(0.001, DotAmount.Westies);
+                DotAmount amount = DotAmount.from(0.01, DotAmount.Westies);
                 System.out.println("------");
                 System.out.println("Currently available: " + AMOUNT_FORMAT.format(aliceAccount.getData().getFree()));
                 System.out.println("Transfer           : " + AMOUNT_FORMAT.format(amount) + " from " + alice + " to " + bob);
@@ -164,11 +167,12 @@ public class Transfer_v14_test {
                 ExtrinsicContext context = ExtrinsicContext.newAutoBuilder(alice, client)
                         .get()
                         .build();
+                System.out.println("ExtrinsicContext : " + context);
                 // prepare call, and sign with sender Secret Key within the context
                 Metadata metadata = new Metadata();
                 AccountRequests.Transfer transfer = AccountRequests.transfer()
-                      //  .runtime(metadata) //TODO: hardcode call index and init
-                        .module(5,3)
+                        //  .runtime(metadata) //TODO: hardcode call index and init
+                        .module(4, 3)
                         .from(alice)
                         .to(bob)
                         .amount(amount)
@@ -186,22 +190,22 @@ public class Transfer_v14_test {
                  */
 
 
-                System.out.println("Using genesis : " + context.getGenesis());
-                System.out.println("Using runtime : " + context.getTxVersion() + ", " + context.getRuntimeVersion());
+                System.out.println("Using genesis : " + context.getGenesisHash());
+                System.out.println("Using runtime : " + context.getTransactionVersion() + ", " + context.getSpecVersion());
                 System.out.println("Using nonce   : " + context.getNonce());
 
                 ByteData req = transfer.encodeRequest();
                 System.out.println("RPC Request Payload: " + req);
-                Hash256 txid = client.execute(
-                        StandardCommands.getInstance().authorSubmitExtrinsic(req)
-                ).get();
-                System.out.println("Tx Hash: " + txid);
+//                Hash256 txid = client.execute(
+//                        StandardCommands.getInstance().authorSubmitExtrinsic(req)
+//                ).get();
+//                System.out.println("Tx Hash: " + txid);
 
                 // wait for a few blocks, to show how subscription to storage changes works, which will
                 // notify about relevant updates during those blocks
                 waitForBlocks.get();
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

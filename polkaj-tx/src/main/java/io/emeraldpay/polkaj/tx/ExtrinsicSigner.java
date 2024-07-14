@@ -12,6 +12,7 @@ import java.security.Signature;
 import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.Optional;
 
 import io.emeraldpay.polkaj.scale.ScaleCodecWriter;
 import io.emeraldpay.polkaj.scale.ScaleWriter;
@@ -201,7 +202,7 @@ public class ExtrinsicSigner<CALL extends ExtrinsicCall> {
             } else {
                 wrt.writeUint256(context.getBlockHash().getBytes());
             }
-            wrt.writeOptional(ScaleCodecWriter.UINT256, context.getMetadataHash().getBytes());
+            wrt.writeOptional(ScaleCodecWriter.UINT256, Optional.ofNullable(null));
             //wrt.writeUint256(context.getMetadataHash().getBytes());
         }
     }
