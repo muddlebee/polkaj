@@ -163,9 +163,11 @@ public class Transfer_v14_test {
 
                 //TODO:4 Perform Transaction
 
+                DotAmount tipAmount = new DotAmount(BigInteger.ZERO, DotAmount.Westies);
                 // prepare context for execution
                 ExtrinsicContext context = ExtrinsicContext.newAutoBuilder(alice, client)
                         .get()
+                        .tip(tipAmount)
                         .build();
                 System.out.println("ExtrinsicContext : " + context);
                 // prepare call, and sign with sender Secret Key within the context
@@ -177,9 +179,10 @@ public class Transfer_v14_test {
                         .to(bob)
                         .amount(amount)
                         .sign(aliceKey, context)
+                        .tip(tipAmount)
                         .build(); //TODO:2   Encoded call data (from step 2) for args, refer below
 
-
+           //     System.out.println(transfer.toString());
                 /**
                  * [
                  *   Pallet Index (Balances pallet)
@@ -196,10 +199,10 @@ public class Transfer_v14_test {
 
                 ByteData req = transfer.encodeRequest();
                 System.out.println("RPC Request Payload: " + req);
-//                Hash256 txid = client.execute(
-//                        StandardCommands.getInstance().authorSubmitExtrinsic(req)
-//                ).get();
-//                System.out.println("Tx Hash: " + txid);
+                Hash256 txid = client.execute(
+                        StandardCommands.getInstance().authorSubmitExtrinsic(req)
+                ).get();
+                System.out.println("Tx Hash: " + txid);
 
                 // wait for a few blocks, to show how subscription to storage changes works, which will
                 // notify about relevant updates during those blocks

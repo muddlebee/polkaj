@@ -157,9 +157,9 @@ bintray {
     }
 }
 
-test {
-    enabled = false
-}
+//test {
+//    enabled = false
+//}
 
 // In your root project's build.gradle
 

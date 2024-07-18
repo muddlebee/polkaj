@@ -74,8 +74,6 @@ public class ScaleCodecReader {
         if (!hasNext()) {
             throw new IndexOutOfBoundsException("Cannot read " + pos + " of " + source.length);
         }
-//        logger.info("pos: {}", pos);
-//        logger.info("source[pos]: {}", source[pos]);
         return source[pos++];
     }
 
@@ -116,9 +114,6 @@ public class ScaleCodecReader {
     public int readCompactInt() {
         return COMPACT_UINT.read(this);
     }
-//    public BigInteger readCompactInt() {
-//        return COMPACT_UINT.read(this);
-//    }
 
     //readCompactBigInt
     public BigInteger readCompactBigInt() {
@@ -158,35 +153,20 @@ public class ScaleCodecReader {
         return readByteArray(len);
     }
 
-//    public byte[] readByteArray() {
-//        BigInteger len = readCompactInt();
-//        return readByteArray(len.intValue());
-//    }
-
-//
-//    public byte[] readByteArrayBigInt() {
-//        BigInteger len = readCompactBigInt();
-//
-//        //implement readByteArrayBigInt
-//        if (len.compareTo(BigInteger.valueOf(Integer.MAX_VALUE)) > 0) {
-//            throw new IllegalArgumentException("Length is too big: " + len);
-//        }
-//        return readByteArray(len.intValue());
-//    }
 
     public byte[] readByteArray(int len) {
-        System.out.println("len: {}" + len);
-        System.out.println("pos: {}"+ pos);
-        System.out.println("source.length: {}" + source.length);
+//        System.out.println("len: {}" + len);
+//        System.out.println("pos: {}"+ pos);
+//        System.out.println("source.length: {}" + source.length);
         if (pos + len > source.length) {
             throw new IllegalArgumentException("Not enough data to read " + len + " bytes");
         }
         byte[] result = new byte[len];
         System.arraycopy(source, pos, result, 0, result.length);
         pos += len;
-        System.out.println("");
-        System.out.println("result : {}"+ Arrays.toString(result));
-        System.out.println("");
+//        System.out.println("");
+//        System.out.println("result : {}"+ Arrays.toString(result));
+//        System.out.println("");
         return result;
     }
 

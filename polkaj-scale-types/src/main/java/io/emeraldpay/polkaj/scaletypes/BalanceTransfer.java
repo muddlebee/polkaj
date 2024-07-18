@@ -6,6 +6,7 @@ import io.emeraldpay.polkaj.scale.UnionValue;
 import io.emeraldpay.polkaj.types.Address;
 import io.emeraldpay.polkaj.types.DotAmount;
 
+
 /**
  * Call to transfer [part of] balance to another address
  */
@@ -101,6 +102,8 @@ public class BalanceTransfer extends ExtrinsicCall {
         return "BalanceTransfer{" +
                 "destination=" + destination +
                 ", balance=" + balance +
+                ", moduleIndex=" + getModuleIndex() +
+                ", callIndex=" + getCallIndex() +
                 '}';
     }
 }

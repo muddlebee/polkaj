@@ -17,8 +17,8 @@ import lombok.Data;
 @Data
 public class ExtrinsicContext {
 
-    private Hash256 blockHash;
     private Era era = Era.IMMORTAL;
+    private Hash256 blockHash;
     private Hash256 genesisHash;
 
     // method: AnyU8a | IMethod<AnyTuple>;
@@ -87,7 +87,7 @@ public class ExtrinsicContext {
             }
             return this;
         }
-
+        //TODO: unecessary method
         public Builder eraBlockHash(Hash256 eraBlockHash) {
             this.blockHash = eraBlockHash;
             return this;

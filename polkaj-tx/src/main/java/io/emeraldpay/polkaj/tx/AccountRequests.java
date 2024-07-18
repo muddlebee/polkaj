@@ -149,6 +149,7 @@ public class AccountRequests {
         private Extrinsic.Signature signature;
         private Long nonce;
         private DotAmount tip;
+        private Integer era;
 
         protected final BalanceTransfer call = new BalanceTransfer();
 
@@ -249,6 +250,12 @@ public class AccountRequests {
             return this;
         }
 
+        //setEra
+        public void setEra(ExtrinsicContext context) {
+            this.era = context.getEra().toInteger();
+        }
+
+
         /**
          * Sign the transfer
          *
@@ -270,6 +277,7 @@ public class AccountRequests {
                 this.from = new Address(SS58Type.Network.LIVE, key.getPublicKey());
             }
             ExtrinsicSigner<BalanceTransfer> signer = new ExtrinsicSigner<>(new BalanceTransferWriter());
+            setEra(context);
             return this.nonce(context)
                     .signed(new Extrinsic.SR25519Signature(signer.sign(context, this.call, key)));
         }
@@ -278,16 +286,21 @@ public class AccountRequests {
          *
          * @return signed Transfer
          */
+        //TODO:Transfer build() add proper getters
         public Transfer build() {
             Extrinsic.TransactionInfo tx = new Extrinsic.TransactionInfo();
             tx.setNonce(this.nonce);
             tx.setSender(this.from);
             tx.setSignature(buildSignature(this.signature));
             tx.setTip(this.tip);
+            tx.setEra(this.era);
+            System.out.println("TransactionInfo.build() tx: " + tx);
 
             Extrinsic<BalanceTransfer> extrinsic = new Extrinsic<>();
             extrinsic.setCall(this.call);
             extrinsic.setTx(tx);
+            System.out.println("BalanceTransfer.build() extrinsic: " + extrinsic);
+
             return new Transfer(extrinsic);
         }
 
@@ -301,6 +314,18 @@ public class AccountRequests {
                     String msg = String.format("Signature type %s is not supported", signature.getType());
                     throw new UnsupportedOperationException(msg);
             }
+        }
+
+        @Override
+        public String toString() {
+            return "TransferBuilder{" +
+                    "from=" + from +
+                    ", signature=" + signature +
+                    ", nonce=" + nonce +
+                    ", tip=" + tip +
+                    ", era=" + era +
+                    ", call=" + call +
+                    '}';
         }
     }
 
