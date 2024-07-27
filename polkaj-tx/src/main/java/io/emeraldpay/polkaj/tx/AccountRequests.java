@@ -247,7 +247,15 @@ public class AccountRequests {
          */
         public TransferBuilder signed(Extrinsic.Signature signature) {
             this.signature = signature;
+            System.out.println("TransferBuilder.signed() signature: " + signature.getValue());
             return this;
+        }
+
+        //setEra
+        public TransferBuilder era(Integer era) {
+            this.era = era;
+            return this;
+
         }
 
         //setEra

@@ -43,6 +43,7 @@ dependencies {
 
     // SLF4J API
     implementation 'org.slf4j:slf4j-api:1.7.32'
+    implementation 'commons-codec:commons-codec:1.14'
 
     // Logback, a SLF4J implementation
     runtimeOnly 'ch.qos.logback:logback-classic:1.2.6'

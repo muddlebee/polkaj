@@ -104,4 +104,22 @@ class AccountRequestsSpec extends Specification {
         then:
         act.bytes.length == 150
     }
+
+    def "Encode transfer_keep_alive test"() {
+        when:
+        def transfer = AccountRequests.transferKeepAlive()
+                .module(4, 3)
+                .from(Address.from("5GEwX4bq8uzehVgdTKfmPrXPU61XoUdqfCZmWxs1tajKz9K8"))
+                .to(Address.from("5GW83GQ53B3UGAMCyoFeFTJV8GKwU6bDjF3iRksdxtSt8QNU"))
+                .nonce(1)
+                .amount(DotAmount.from(0.01, DotAmount.Westies))
+                .tip(DotAmount.from(0, DotAmount.Westies))
+                .era(0)
+                .signed(new Extrinsic.ED25519Signature(
+                        Hash512.from("0x28f876bd966b8f6bdf64f454744762e6a2093261674fc2b2f500703ed63ad37c4158efb077bc9fc23fed5fcf6b2a8e70410befdfdea2de2a0396262440a8838d")))
+                .build()
+        def act = transfer.encodeRequest()
+        then:
+        !act.toString().isEmpty()
+    }
 }

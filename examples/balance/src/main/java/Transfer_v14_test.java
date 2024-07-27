@@ -182,7 +182,7 @@ public class Transfer_v14_test {
                         .tip(tipAmount)
                         .build(); //TODO:2   Encoded call data (from step 2) for args, refer below
 
-           //     System.out.println(transfer.toString());
+                //     System.out.println(transfer.toString());
                 /**
                  * [
                  *   Pallet Index (Balances pallet)

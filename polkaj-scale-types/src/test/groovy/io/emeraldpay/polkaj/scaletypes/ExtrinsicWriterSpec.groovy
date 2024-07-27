@@ -14,17 +14,17 @@ class ExtrinsicWriterSpec extends Specification {
         def codec = new ExtrinsicWriter(new BalanceTransferWriter())
         def tx = new Extrinsic().tap {
             tx = new Extrinsic.TransactionInfo().tap {
-                sender = Address.from("GksmaqmLPbfQhsNgT2S5GcwwTkGXCpkPU8FDzxP4siKPAVu")
-                era = 229
-                nonce = 3
-                tip = DotAmount.ZERO
+                sender = Address.from("5GW83GQ53B3UGAMCyoFeFTJV8GKwU6bDjF3iRksdxtSt8QNU")
+                era = 0
+                nonce = 77
+                tip = new DotAmount(BigInteger.ZERO, DotAmount.Westies)
                 signature = new Extrinsic.SR25519Signature(
-                        Hash512.from("0xbc11655de6e7461b0951353db25f4aaf67a58db547fa3a2f20cbcd7772ba715f8ccbe9d8bddf253c7f6e6f6acb83848a7da1f27de248afca10d3291de92ede8c")
+                        Hash512.from("0x28f876bd966b8f6bdf64f454744762e6a2093261674fc2b2f500703ed63ad37c4158efb077bc9fc23fed5fcf6b2a8e70410befdfdea2de2a0396262440a8838d")
                 )
             }
             call = new BalanceTransfer(4, 0).tap {
-                destination = Address.from("ED3aw4s68wTDscCbWnCCw94qSrkA1D8HcUXC8ytaoM2X2xd")
-                balance = DotAmount.fromDots(3.451)
+                destination = Address.from("5GW83GQ53B3UGAMCyoFeFTJV8GKwU6bDjF3iRksdxtSt8QNU")
+                balance = DotAmount.from(0.01, DotAmount.Westies);
             }
         }
         when:

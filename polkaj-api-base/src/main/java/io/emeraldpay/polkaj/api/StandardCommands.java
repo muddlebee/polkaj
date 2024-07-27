@@ -4,6 +4,7 @@ import io.emeraldpay.polkaj.json.*;
 import io.emeraldpay.polkaj.types.Address;
 import io.emeraldpay.polkaj.types.ByteData;
 import io.emeraldpay.polkaj.types.Hash256;
+import org.apache.commons.codec.binary.Hex;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -382,6 +383,12 @@ public class StandardCommands {
         if (extrinsic.getBytes().length == 0) {
             throw new IllegalArgumentException("Empty extrinsic");
         }
+        // Convert ByteData to hex string
+        String hexExtrinsic = "0x" + Hex.encodeHexString(extrinsic.getBytes());
+
+        // Log the hex string for debugging
+        System.out.println("Submitting extrinsic: " + hexExtrinsic);
+
         return RpcCall.create(Hash256.class, PolkadotMethod.AUTHOR_SUBMIT_EXTRINSIC, extrinsic);
     }
 
