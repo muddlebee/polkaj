@@ -82,7 +82,7 @@ class NewExtrinsicSignerSpec extends Specification {
                 .eraBlockHash(Hash256.from("0xe143f23803ac50e8f6f8e62695d1ce9e4e1d68aa36c1cd2cfd15340213f3423e"))
                 .tip(DotAmount.from(0, DotAmount.Westies))
                 .build()
-        BalanceTransfer call = new BalanceTransfer(5, 0).tap {
+        BalanceTransfer call = new BalanceTransfer(4, 3).tap {
             destination = dest
             balance = DotAmount.from(0.01, DotAmount.Westies)
         }
@@ -91,6 +91,6 @@ class NewExtrinsicSignerSpec extends Specification {
         def signature = new Extrinsic.SR25519Signature(signer.sign(context, call, aliceKey))
         then:
         println("signature: ${signature}")
-
+        //output 0x88f770dca7621d49f15afca72e2d092063c7a6a1812aab44edc84ac6da8f9d08f02eb21d5d757518f1242ed3bb81a0c020760670f6adf71b6a865027cd3e5081
     }
 }
